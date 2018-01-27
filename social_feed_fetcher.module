@@ -16,6 +16,10 @@ use Drupal\node\Entity\Node;
 function social_feed_fetcher_cron() {
   // We access our configuration.
   $config = \Drupal::configFactory()->getEditable('social_feed_fetcher.settings');
+  $config_facebook = \Drupal::configFactory()->getEditable('socialfeed.facebooksettings');
+  $config_twitter = \Drupal::configFactory()->getEditable('socialfeed.twittersettings');
+  $config_instagram = \Drupal::configFactory()->getEditable('socialfeed.instagramsettings');
+
   $interval = $config->get('cron.interval');
 
   $request_time = \Drupal::time()->getRequestTime();
@@ -23,21 +27,28 @@ function social_feed_fetcher_cron() {
   // Check if we need to run the cron yet.
   $next_execution = \Drupal::state()->get('social_feed_fetcher.next_execution');
   $next_execution = !empty($next_execution) ? $next_execution : 0;
-  if ($request_time >= $next_execution) {
 
-    // TODO: Create instance of Desirable service
+  if ($request_time >= $next_execution) {
 
     /** @var \Drupal\socialfeed\Services\FacebookPostCollector $facebook */
     $facebook = \Drupal::service('socialfeed.facebook');
-
+    $instagram = \Drupal::service('socialfeed.instagram');
+    $twitter = \Drupal::service('socialfeed.twitter');
     // Get facebook posts, if enabled.
     $facebook_count = 0;
     if ($config->get('facebook.enabled') == TRUE) {
       $facebook->setFacebookClient();
       // Get all recent posts facebook user.
-      $data = $facebook->getFeed($config->get('facebook.username'));
-
-      foreach ($data as $item) {
+      $post_types = $config_facebook->get('all_types');
+      if (!$post_types) {
+        $post_types = $config_facebook->get('post_type');
+      }
+      $posts = $facebook->getPosts(
+        $config_facebook->get('page_name'),
+        $post_types,
+        $config_facebook->get('no_feeds')
+      );
+      foreach ($posts as $item) {
         $facebook_count += social_feed_fetcher_create_node($item);
       }
     }
@@ -45,17 +56,8 @@ function social_feed_fetcher_cron() {
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter.enabled') == TRUE) {
-      $feed->twitter->setCredentials([
-        'consumer_key' => $config->get('twitter.consumer_key'),
-        'consumer_secret' => $config->get('twitter.consumer_secret'),
-        'access_token' => $config->get('twitter.access_token'),
-        'access_token_secret' => $config->get('twitter.access_token_secret'),
-      ]);
-
-      // Get all recent posts twitter user.
-      $data = $feed->twitter->getFeed($config->get('twitter.username'));
-
-      foreach ($data as $item) {
+      $posts = $twitter->getPosts($config_twitter->get('tweets_count'));
+      foreach ($posts as $item) {
         $twitter_count += social_feed_fetcher_create_node($item);
       }
     }
@@ -63,15 +65,9 @@ function social_feed_fetcher_cron() {
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram.enabled') == TRUE) {
-      $feed->instagram->setCredentials([
-        'client_id' => $config->get('instagram.client_id'),
-        'access_token' => $config->get('instagram.access_token'),
-      ]);
+      $posts = $instagram->getPosts($config_instagram->get('picture_count'), $config_instagram->get('picture_resolution'));
 
-      // Get all recent posts instagram user.
-      $data = $feed->instagram->getFeed($config->get('instagram.username'));
-
-      foreach ($data as $item) {
+      foreach ($posts as $item) {
         $instagram_count += social_feed_fetcher_create_node($item);
       }
     }
@@ -85,7 +81,7 @@ function social_feed_fetcher_cron() {
 
     // Has the cron job been manually called? show the user a message.
     if (\Drupal::state()->get('social_feed_fetcher_show_status_message')) {
-      drupal_set_message(t('The Social Feed Aggregator cron executed at %time', ['%time' => date_iso8601($request_time)]));
+      drupal_set_message(t('The Social Feed Fetcher cron executed at %time', ['%time' => date_iso8601($request_time)]));
       \Drupal::state()->set('social_feed_fetcher_show_status_message', FALSE);
     }
 
@@ -128,16 +124,17 @@ function social_feed_fetcher_create_node($item) {
     ->condition('field_sfa_id', $item->id);
   $entity_ids = $query->execute();
 
+  // TODO: need to see structure of the posts and change this according to post
   if (empty($entity_ids)) {
     $node = Node::create([
       'type'                => 'social_post',
       'title'               => ucwords($item->service) . ' Post ID: ' . $item->id,
-      'field_sfa_platform'  => ucwords($item->service),
-      'field_sfa_id'        => $item->id,
-      'field_sfa_post'      => ['value' => social_feed_fetcher_linkify(html_entity_decode($item->text)), 'format' => $config->get('formats.post_format')],
-      'field_sfa_link'      => $item->link,
-      'field_sfa_image'     => !empty($item->media->video) ? $item->media->video->image : (!empty($item->media->image) ? $item->media->image : ''), 
-      'field_sfa_posted'    => date("Y-m-d\TH:i:s", $item->created),
+      'field_platform'  => ucwords($item->service),
+      'field_id'        => $item->id,
+      'field_post'      => ['value' => social_feed_fetcher_linkify(html_entity_decode($item->text)), 'format' => $config->get('formats.post_format')],
+      'field_link'      => $item->link,
+      'field_image'     => !empty($item->media->video) ? $item->media->video->image : (!empty($item->media->image) ? $item->media->image : ''),
+      'field_posted'    => date("Y-m-d\TH:i:s", $item->created),
     ]);
     $node->save();
 
