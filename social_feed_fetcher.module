@@ -158,14 +158,12 @@ function social_feed_fetcher_create_node_twitter_service($item, $service_name) {
         'format' => $config->get('formats.post_format'),
       ],
       'field_link' => [
-        'uri' => $item->link,
+        'uri' => $item->source,
         'title' => '',
         'options' => [],
       ],
       'field_sp_image' => [
-        'uri' => $item->media->image,
-        'title' => '',
-        'options' => [],
+        'target_id' => social_feed_fetcher_save_file($item->entities->media[0]->media_url_https,'public://twitter/'),
       ],
       'field_posted' => $string,
     ]);
@@ -209,9 +207,7 @@ function social_feed_fetcher_create_node_facebook_service($item, $service_name) 
         'options' => [],
       ],
       'field_sp_image' => [
-        'uri' => $item['picture'],
-        'title' => '',
-        'options' => [],
+        'target_id' => social_feed_fetcher_save_file($item['picture'],'public://facebook/'),
       ],
       'field_posted' => [
         'value' => $string
@@ -258,9 +254,7 @@ function social_feed_fetcher_create_node_instagram_service($item, $service_name)
         'options' => [],
       ],
       'field_sp_image' => [
-        'uri' => $item['media_url'],
-        'title' => '',
-        'options' => [],
+        'target_id' => social_feed_fetcher_save_file($item['media_url'],'public://instagram/'),
       ],
       'field_posted' => [
         'value' => $string

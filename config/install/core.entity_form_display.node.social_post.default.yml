@@ -32,12 +32,13 @@ content:
     third_party_settings: {  }
     type: string_textfield
   field_sp_image:
-    weight: 5
     settings:
-      placeholder_url: ''
-      placeholder_title: ''
+      progress_indicator: throbber
+      preview_image_style: thumbnail
     third_party_settings: {  }
-    type: link_default
+    type: image_image
+    weight: 26
+    region: content
   field_link:
     weight: 4
     settings:

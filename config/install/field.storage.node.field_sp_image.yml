@@ -5,14 +5,24 @@ dependencies:
     module:
       - social_feed_fetcher
   module:
-    - link
+    - image
     - node
 id: node.field_sp_image
 field_name: field_sp_image
 entity_type: node
-type: link
-settings: {  }
-module: link
+type: image
+settings:
+  default_image:
+    uuid: null
+    alt: ''
+    title: ''
+    width: null
+    height: null
+  target_type: file
+  display_field: false
+  display_default: false
+  uri_scheme: public
+module: image
 locked: false
 cardinality: 1
 translatable: true

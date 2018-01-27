@@ -27,16 +27,13 @@ content:
     third_party_settings: {  }
     type: string
   field_sp_image:
-    weight: 104
-    label: above
+    label: visually_hidden
     settings:
-      trim_length: 80
-      url_only: false
-      url_plain: false
-      rel: ''
-      target: ''
+      image_style: medium
+      image_link: file
     third_party_settings: {  }
-    type: link
+    type: image
+    weight: 104
   field_link:
     weight: 103
     label: above
