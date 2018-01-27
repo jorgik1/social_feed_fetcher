@@ -138,9 +138,9 @@ function social_feed_fetcher_create_node($item, $service_name) {
       'field_platform'  => ucwords($service_name),
       'field_id'        => $item->id,
       'field_post'      => ['value' => social_feed_fetcher_linkify(html_entity_decode($item->text)), 'format' => $config->get('formats.post_format')],
-      'field_link'      => ['url' => $service_name = 'twitter' ? $item->source : $item->link],
-      'field_sp_image'     => ['url' => !empty($item->media->video) ? $item->media->video->image : (!empty($item->media->image) ? $item->media->image : '')],
-      'field_posted'    => date("Y-m-d\TH:i:s", $item->created_at),
+      'field_link'      => ['url' => $service_name === 'twitter' ? $item->source : $item->link],
+      'field_sp_image'     => ['uri' => !empty($item->media->video) ? $item->media->video->image : (!empty($item->media->image) ? $item->media->image : '')],
+      'field_posted'    => $service_name === 'twitter' ? $item->created_at : $item->created,
     ]);
     $node->save();
 
