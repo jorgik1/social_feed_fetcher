@@ -2,10 +2,9 @@
 
 /**
  * @file
- * Social Feed Aggregator Module.
+ * Social Feed Fetcher Module.
  */
 
-use Brynjdigital\SocialFeed\SocialFeed;
 use Drupal\node\Entity\Node;
 
 /**
@@ -64,46 +63,47 @@ function social_feed_fetcher_cron() {
         $facebook_count += social_feed_fetcher_create_node_facebook_service($item, $service);
       }
     }
-
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter.enabled') == TRUE) {
       $service = 'twitter';
       $twitter->setTwitterClient();
-      $posts = $twitter->getPosts($config_twitter->get('tweets_count'));
+      try {
+        $posts = $twitter->getPosts($config_twitter->get('tweets_count'));
+      } catch (\Exception $exception) {
+        drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
+      }
       foreach ($posts as $item) {
         $twitter_count += social_feed_fetcher_create_node_twitter_service($item, $service);
       }
     }
-
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram.enabled') == TRUE) {
       $service = 'instagram';
-
       $instagram->setInstagramClient();
-      $posts = $instagram->getPosts($config_instagram->get('picture_count'), $config_instagram->get('picture_resolution'));
-
+      try {
+        $posts = $instagram->getPosts($config_instagram->get('picture_count'), $config_instagram->get('picture_resolution'));
+      } catch (\Exception $exception) {
+        drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
+      }
       foreach ($posts as $item) {
         $instagram_count += social_feed_fetcher_create_node_instagram_service($item, $service);
       }
     }
 
-    // Log job.
     \Drupal::logger('social_feed_fetcher')
-      ->info('Social Feed Aggregator ran. Facebook @facebook. Twitter @twitter. Instagram @instagram.', [
+      ->info('Social Feed Fetcher ran. Facebook @facebook. Twitter @twitter. Instagram @instagram.', [
         '@facebook' => $config->get('facebook.enabled') ? ' enabled, ' . $facebook_count . ' new posts' : ' disabled',
         '@twitter' => $config->get('twitter.enabled') ? ' enabled, ' . $twitter_count . ' new posts' : ' disabled',
         '@instagram' => $config->get('instagram.enabled') ? ' enabled, ' . $instagram_count . ' new posts' : ' disabled',
       ]);
 
-    // Has the cron job been manually called? show the user a message.
     if (\Drupal::state()->get('social_feed_fetcher_show_status_message')) {
       drupal_set_message(t('The Social Feed Fetcher cron executed at %time', ['%time' => date_iso8601($request_time)]));
       \Drupal::state()->set('social_feed_fetcher_show_status_message', FALSE);
     }
 
-    // Set next time for cron to run.
     \Drupal::state()
       ->set('social_feed_fetcher.next_execution', $request_time + $interval);
   }
@@ -168,10 +168,8 @@ function social_feed_fetcher_create_node_twitter_service($item, $service_name) {
       'field_posted' => $string,
     ]);
     $node->save();
-
     return TRUE;
   }
-
   return FALSE;
 }
 
@@ -214,10 +212,8 @@ function social_feed_fetcher_create_node_facebook_service($item, $service_name) 
       ],
     ]);
     $node->save();
-
     return TRUE;
   }
-
   return FALSE;
 }
 
@@ -261,12 +257,11 @@ function social_feed_fetcher_create_node_instagram_service($item, $service_name)
       ],
     ]);
     $node->save();
-
     return TRUE;
   }
-
   return FALSE;
 }
+
 /**
  * Save external file.
  *

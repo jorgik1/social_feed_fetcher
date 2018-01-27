@@ -196,7 +196,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
    * Allow user to directly execute cron, optionally forcing it.
    */
   public function cronRun(array &$form, FormStateInterface &$form_state) {
-
     // Use a state variable to signal that cron was run manually from this form.
     $this->state->set('social_feed_fetcher.next_execution', 0);
     $this->state->set('social_feed_fetcher_show_status_message', TRUE);
