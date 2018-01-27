@@ -7,8 +7,8 @@ dependencies:
   module:
     - link
     - node
-id: node.field_image
-field_name: field_image
+id: node.field_sp_image
+field_name: field_sp_image
 entity_type: node
 type: link
 settings: {  }

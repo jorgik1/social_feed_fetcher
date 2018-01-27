@@ -2,11 +2,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_image
+    - field.storage.node.field_sp_image
     - node.type.social_post
   module:
     - link
-id: node.social_post.field_image
+id: node.social_post.field_sp_image
 field_name: field_image
 entity_type: node
 bundle: social_post

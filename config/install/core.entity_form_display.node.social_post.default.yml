@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.social_post.field_id
-    - field.field.node.social_post.field_image
+    - field.field.node.social_post.field_sp_image
     - field.field.node.social_post.field_link
     - field.field.node.social_post.field_platform
     - field.field.node.social_post.field_post
@@ -24,42 +24,42 @@ content:
     weight: 8
     settings: {  }
     third_party_settings: {  }
-  field_sfa_id:
+  field_id:
     weight: 6
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
-  field_sfa_image:
+  field_sp_image:
     weight: 5
     settings:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
     type: link_default
-  field_sfa_link:
+  field_link:
     weight: 4
     settings:
       placeholder_url: ''
       placeholder_title: ''
     third_party_settings: {  }
     type: link_default
-  field_sfa_platform:
+  field_platform:
     weight: 3
     settings:
       size: 60
       placeholder: ''
     third_party_settings: {  }
     type: string_textfield
-  field_sfa_post:
+  field_post:
     weight: 1
     settings:
       rows: 5
       placeholder: ''
     third_party_settings: {  }
     type: text_textarea
-  field_sfa_posted:
+  field_posted:
     weight: 2
     settings: {  }
     third_party_settings: {  }

@@ -3,7 +3,7 @@ status: true
 dependencies:
   config:
     - field.field.node.social_post.field_id
-    - field.field.node.social_post.field_image
+    - field.field.node.social_post.field_sp_image
     - field.field.node.social_post.field_link
     - field.field.node.social_post.field_platform
     - field.field.node.social_post.field_post
