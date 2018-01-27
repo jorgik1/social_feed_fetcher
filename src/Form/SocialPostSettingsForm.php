@@ -88,7 +88,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     ];
     $form['status']['last'] = [
       '#type' => 'item',
-      '#markup' => $this->t('The Social Feed Aggregator will next execute the first time the cron runs after %time (%seconds seconds from now)', $args),
+      '#markup' => $this->t('The Social Feed Fetcher will next execute the first time the cron runs after %time (%seconds seconds from now)', $args),
     ];
 
     $form['facebook'] = [
@@ -103,29 +103,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('facebook.enabled'),
     ];
 
-    $form['facebook']['facebook_username'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Username'),
-      '#default_value' => $config->get('facebook.username'),
-      '#required' => $config->get('facebook.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['facebook']['facebook_app_id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('App ID'),
-      '#default_value' => $config->get('facebook.app_id'),
-      '#required' => $config->get('facebook.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['facebook']['facebook_app_secret'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('App Secret'),
-      '#default_value' => $config->get('facebook.app_secret'),
-      '#required' => $config->get('facebook.enabled') ? TRUE : FALSE,
-      '#description' => $this->t('Obtain your Facebook app details by following the guide at <a href="@link">@link</a>', [
-        '@link' => 'https://developers.facebook.com/docs/apps/register',
-      ]),
-    ];
 
     $form['twitter'] = [
       '#type' => 'details',
@@ -139,44 +116,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('twitter.enabled'),
     ];
 
-    $form['twitter']['twitter_username'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Username'),
-      '#default_value' => $config->get('twitter.username'),
-      '#required' => $config->get('twitter.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['twitter']['twitter_consumer_key'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Consumer Key'),
-      '#default_value' => $config->get('twitter.consumer_key'),
-      '#required' => $config->get('twitter.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['twitter']['twitter_consumer_secret'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Consumer Secret'),
-      '#default_value' => $config->get('twitter.consumer_secret'),
-      '#required' => $config->get('twitter.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['twitter']['twitter_access_token'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Access Token'),
-      '#default_value' => $config->get('twitter.access_token'),
-      '#required' => $config->get('twitter.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['twitter']['twitter_access_token_secret'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Access Token Secret'),
-      '#default_value' => $config->get('twitter.access_token_secret'),
-      '#required' => $config->get('twitter.enabled') ? TRUE : FALSE,
-      '#description' => $this->t('Obtain your Twitter app details by following the guide at <a href="@link">@link</a>', [
-        '@link' => 'https://dev.twitter.com/oauth/overview/application-owner-access-tokens',
-      ]),
-    ];
-
     $form['instagram'] = [
       '#type' => 'details',
       '#title' => $this->t('Instagram settings'),
@@ -187,30 +126,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Enable'),
       '#default_value' => $config->get('instagram.enabled'),
-    ];
-
-    $form['instagram']['instagram_username'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Username'),
-      '#default_value' => $config->get('instagram.username'),
-      '#required' => $config->get('instagram.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['instagram']['instagram_client_id'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Client ID'),
-      '#default_value' => $config->get('instagram.client_id'),
-      '#required' => $config->get('instagram.enabled') ? TRUE : FALSE,
-    ];
-
-    $form['instagram']['instagram_access_token'] = [
-      '#type' => 'textfield',
-      '#title' => $this->t('Access Token'),
-      '#default_value' => $config->get('instagram.access_token'),
-      '#required' => $config->get('instagram.enabled') ? TRUE : FALSE,
-      '#description' => $this->t('Obtain your Instagram app details by following the guide at <a href="@link">@link</a>', [
-        '@link' => 'https://www.instagram.com/developer/authentication/',
-      ]),
     ];
 
     if ($this->currentUser->hasPermission('administer site configuration')) {
@@ -274,31 +189,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-
-    // Extract the values submitted by the user.
-    $values = $form_state->getValues();
-
-    // Check user has provided all facebook details.
-    if (!empty($values['facebook_enabled'])) {
-      if (empty($values['facebook_username']) || empty($values['facebook_app_id']) || empty($values['facebook_app_secret'])) {
-        $form_state->setErrorByName('facebook_enabled', $this->t('Please provide all Facebook details.'));
-      }
-    }
-
-    // Check user has provided all twitter details.
-    if (!empty($values['twitter_enabled'])) {
-      if (empty($values['twitter_username']) || empty($values['twitter_consumer_key']) || empty($values['twitter_consumer_secret']) || empty($values['twitter_access_token']) || empty($values['twitter_access_token_secret'])) {
-        $form_state->setErrorByName('twitter_enabled', $this->t('Please provide all Twitter details.'));
-      }
-    }
-
-    // Check user has provided all instagram details.
-    if (!empty($values['instagram_enabled'])) {
-      if (empty($values['instagram_username']) || empty($values['instagram_client_id']) || empty($values['instagram_access_token'])) {
-        $form_state->setErrorByName('instagram_enabled', $this->t('Please provide all Instagram details.'));
-      }
-    }
-
     parent::validateForm($form, $form_state);
   }
 
@@ -325,19 +215,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $this->config('social_feed_fetcher.settings')
       ->set('cron.interval', $form_state->getValue('social_feed_fetcher_interval'))
       ->set('facebook.enabled', $form_state->getValue('facebook_enabled'))
-      ->set('facebook.username', $form_state->getValue('facebook_username'))
-      ->set('facebook.app_id', $form_state->getValue('facebook_app_id'))
-      ->set('facebook.app_secret', $form_state->getValue('facebook_app_secret'))
       ->set('twitter.enabled', $form_state->getValue('twitter_enabled'))
-      ->set('twitter.username', $form_state->getValue('twitter_username'))
-      ->set('twitter.consumer_key', $form_state->getValue('twitter_consumer_key'))
-      ->set('twitter.consumer_secret', $form_state->getValue('twitter_consumer_secret'))
-      ->set('twitter.access_token', $form_state->getValue('twitter_access_token'))
-      ->set('twitter.access_token_secret', $form_state->getValue('twitter_access_token_secret'))
       ->set('instagram.enabled', $form_state->getValue('instagram_enabled'))
-      ->set('instagram.username', $form_state->getValue('instagram_username'))
-      ->set('instagram.client_id', $form_state->getValue('instagram_client_id'))
-      ->set('instagram.access_token', $form_state->getValue('instagram_access_token'))
       ->set('formats.post_format', $form_state->getValue('formats_post_format'))
       ->save();
 

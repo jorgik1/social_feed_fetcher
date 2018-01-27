@@ -10,6 +10,8 @@ use Drupal\node\Entity\Node;
 
 /**
  * Cron job to pull social feeds, as configured by module settings.
+ *
+ * @throws \Facebook\Exceptions\FacebookSDKException
  */
 function social_feed_fetcher_cron() {
   // We access our configuration.
@@ -24,18 +26,16 @@ function social_feed_fetcher_cron() {
   if ($request_time >= $next_execution) {
 
     // TODO: Create instance of Desirable service
-    $feed = '';
+
+    /** @var \Drupal\socialfeed\Services\FacebookPostCollector $facebook */
+    $facebook = \Drupal::service('socialfeed.facebook');
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
     if ($config->get('facebook.enabled') == TRUE) {
-      $feed->facebook->setCredentials([
-        'app_id' => $config->get('facebook.app_id'),
-        'app_secret' => $config->get('facebook.app_secret'),
-      ]);
-
+      $facebook->setFacebookClient();
       // Get all recent posts facebook user.
-      $data = $feed->facebook->getFeed($config->get('facebook.username'));
+      $data = $facebook->getFeed($config->get('facebook.username'));
 
       foreach ($data as $item) {
         $facebook_count += social_feed_fetcher_create_node($item);
