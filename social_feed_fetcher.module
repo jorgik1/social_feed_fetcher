@@ -158,7 +158,7 @@ function social_feed_fetcher_create_node_twitter_service($item, $service_name) {
         'format' => $config->get('formats.post_format'),
       ],
       'field_link' => [
-        'uri' => $item->text,
+        'uri' => $item->entities->urls[0]->url,
         'title' => '',
         'options' => [],
       ],
