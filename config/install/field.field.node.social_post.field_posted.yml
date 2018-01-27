@@ -2,14 +2,14 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_sfa_posted
-    - node.type.sfa_social_post
+    - field.storage.node.field_posted
+    - node.type.social_post
   module:
     - datetime
-id: node.sfa_social_post.field_sfa_posted
-field_name: field_sfa_posted
+id: node.social_post.field_posted
+field_name: field_posted
 entity_type: node
-bundle: sfa_social_post
+bundle: social_post
 label: Posted
 description: ''
 required: true

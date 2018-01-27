@@ -11,8 +11,8 @@ third_party_settings:
     available_menus: {  }
     parent: ''
 name: 'Social Post'
-type: sfa_social_post
-description: 'This content type is provided by the Social Feed Aggregator module.'
+type: social_post
+description: 'This content type for Social posts'
 help: ''
 new_revision: false
 preview_mode: 1

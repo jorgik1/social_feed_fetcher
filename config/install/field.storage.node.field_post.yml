@@ -7,8 +7,8 @@ dependencies:
   module:
     - node
     - text
-id: node.field_sfa_post
-field_name: field_sfa_post
+id: node.field_post
+field_name: field_post
 entity_type: node
 type: text_long
 settings: {  }

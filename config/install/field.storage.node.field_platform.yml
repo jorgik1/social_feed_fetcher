@@ -6,8 +6,8 @@ dependencies:
       - social_feed_fetcher
   module:
     - node
-id: node.field_sfa_platform
-field_name: field_sfa_platform
+id: node.field_platform
+field_name: field_platform
 entity_type: node
 type: string
 settings:

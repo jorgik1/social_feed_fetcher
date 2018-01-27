@@ -5,16 +5,14 @@ dependencies:
     module:
       - social_feed_fetcher
   module:
+    - link
     - node
-id: node.field_sfa_id
-field_name: field_sfa_id
+id: node.field_image
+field_name: field_image
 entity_type: node
-type: string
-settings:
-  max_length: 40
-  is_ascii: false
-  case_sensitive: false
-module: core
+type: link
+settings: {  }
+module: link
 locked: false
 cardinality: 1
 translatable: true

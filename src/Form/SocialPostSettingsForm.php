@@ -37,6 +37,13 @@ class SocialPostSettingsForm extends ConfigFormBase {
   protected $state;
 
   /**
+   * Request time value.
+   *
+   * @var int
+   */
+  private $requestTime;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(ConfigFactoryInterface $config_factory, AccountInterface $current_user, CronInterface $cron, StateInterface $state) {
@@ -44,7 +51,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $this->currentUser = $current_user;
     $this->cron = $cron;
     $this->state = $state;
-
   }
 
   /**
@@ -71,13 +77,14 @@ class SocialPostSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('social_feed_fetcher.settings');
+    $this->requestTime = \Drupal::time()->getRequestTime();
 
     $next_execution = $this->state->get('social_feed_fetcher.next_execution');
-    $next_execution = !empty($next_execution) ? $next_execution : REQUEST_TIME;
+    $next_execution = !empty($next_execution) ? $next_execution : $this->requestTime;
 
     $args = [
       '%time' => date_iso8601($this->state->get('social_feed_fetcher.next_execution')),
-      '%seconds' => $next_execution - REQUEST_TIME,
+      '%seconds' => $next_execution - $this->requestTime,
     ];
     $form['status']['last'] = [
       '#type' => 'item',
@@ -92,7 +99,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
 
     $form['facebook']['facebook_enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enabled?'),
+      '#title' => $this->t('Enable'),
       '#default_value' => $config->get('facebook.enabled'),
     ];
 
@@ -128,7 +135,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
 
     $form['twitter']['twitter_enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enabled?'),
+      '#title' => $this->t('Enable'),
       '#default_value' => $config->get('twitter.enabled'),
     ];
 
@@ -178,7 +185,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
 
     $form['instagram']['instagram_enabled'] = [
       '#type' => 'checkbox',
-      '#title' => $this->t('Enabled?'),
+      '#title' => $this->t('Enable'),
       '#default_value' => $config->get('instagram.enabled'),
     ];
 

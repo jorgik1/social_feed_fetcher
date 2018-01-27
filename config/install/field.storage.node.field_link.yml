@@ -7,8 +7,8 @@ dependencies:
   module:
     - link
     - node
-id: node.field_sfa_link
-field_name: field_sfa_link
+id: node.field_link
+field_name: field_link
 entity_type: node
 type: link
 settings: {  }

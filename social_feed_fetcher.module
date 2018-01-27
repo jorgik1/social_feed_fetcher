@@ -16,10 +16,12 @@ function social_feed_fetcher_cron() {
   $config = \Drupal::configFactory()->getEditable('social_feed_fetcher.settings');
   $interval = $config->get('cron.interval');
 
+  $request_time = \Drupal::time()->getRequestTime();
+
   // Check if we need to run the cron yet.
   $next_execution = \Drupal::state()->get('social_feed_fetcher.next_execution');
   $next_execution = !empty($next_execution) ? $next_execution : 0;
-  if (REQUEST_TIME >= $next_execution) {
+  if ($request_time >= $next_execution) {
 
     // TODO: Create instance of Desirable service
     $feed = '';
@@ -83,12 +85,12 @@ function social_feed_fetcher_cron() {
 
     // Has the cron job been manually called? show the user a message.
     if (\Drupal::state()->get('social_feed_fetcher_show_status_message')) {
-      drupal_set_message(t('The Social Feed Aggregator cron executed at %time', ['%time' => date_iso8601(REQUEST_TIME)]));
+      drupal_set_message(t('The Social Feed Aggregator cron executed at %time', ['%time' => date_iso8601($request_time)]));
       \Drupal::state()->set('social_feed_fetcher_show_status_message', FALSE);
     }
 
     // Set next time for cron to run.
-    \Drupal::state()->set('social_feed_fetcher.next_execution', REQUEST_TIME + $interval);
+    \Drupal::state()->set('social_feed_fetcher.next_execution', $request_time + $interval);
   }
 }
 
@@ -122,13 +124,13 @@ function social_feed_fetcher_create_node($item) {
   $config = \Drupal::configFactory()->getEditable('social_feed_fetcher.settings');
   $query = \Drupal::entityQuery('node')
     ->condition('status', 1)
-    ->condition('type', 'sfa_social_post')
+    ->condition('type', 'social_post')
     ->condition('field_sfa_id', $item->id);
   $entity_ids = $query->execute();
 
   if (empty($entity_ids)) {
     $node = Node::create([
-      'type'                => 'sfa_social_post',
+      'type'                => 'social_post',
       'title'               => ucwords($item->service) . ' Post ID: ' . $item->id,
       'field_sfa_platform'  => ucwords($item->service),
       'field_sfa_id'        => $item->id,
@@ -139,9 +141,8 @@ function social_feed_fetcher_create_node($item) {
     ]);
     $node->save();
 
-    return 1;
+    return TRUE;
   }
-  else {
-    return 0;
-  }
+
+  return FALSE;
 }

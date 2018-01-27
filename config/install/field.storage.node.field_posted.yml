@@ -7,8 +7,8 @@ dependencies:
   module:
     - datetime
     - node
-id: node.field_sfa_posted
-field_name: field_sfa_posted
+id: node.field_posted
+field_name: field_posted
 entity_type: node
 type: datetime
 settings:

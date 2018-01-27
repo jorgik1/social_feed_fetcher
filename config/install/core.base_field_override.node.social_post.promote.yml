@@ -2,11 +2,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - node.type.sfa_social_post
-id: node.sfa_social_post.promote
+    - node.type.social_post
+id: node.social_post.promote
 field_name: promote
 entity_type: node
-bundle: sfa_social_post
+bundle: social_post
 label: 'Promoted to front page'
 description: ''
 required: false

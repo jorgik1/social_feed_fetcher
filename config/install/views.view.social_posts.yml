@@ -2,11 +2,11 @@ langcode: en
 status: true
 dependencies:
   config:
-    - field.storage.node.field_sfa_id
-    - field.storage.node.field_sfa_platform
-    - field.storage.node.field_sfa_post
-    - field.storage.node.field_sfa_posted
-    - node.type.sfa_social_post
+    - field.storage.node.field_id
+    - field.storage.node.field_platform
+    - field.storage.node.field_post
+    - field.storage.node.field_posted
+    - node.type.social_post
     - system.menu.admin
   module:
     - datetime
@@ -157,10 +157,10 @@ display:
             - pathauto_update_alias_node
           entity_type: node
           plugin_id: node_bulk_form
-        field_sfa_platform:
-          id: field_sfa_platform
-          table: node__field_sfa_platform
-          field: field_sfa_platform
+        field_platform:
+          id: field_platform
+          table: node__field_platform
+          field: field_platform
           relationship: none
           group_type: group
           admin_label: ''
@@ -220,10 +220,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_sfa_id:
-          id: field_sfa_id
-          table: node__field_sfa_id
-          field: field_sfa_id
+        field_id:
+          id: field_id
+          table: node__field_id
+          field: field_id
           relationship: none
           group_type: group
           admin_label: ''
@@ -283,10 +283,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_sfa_post:
-          id: field_sfa_post
-          table: node__field_sfa_post
-          field: field_sfa_post
+        field_post:
+          id: field_post
+          table: node__field_post
+          field: field_post
           relationship: none
           group_type: group
           admin_label: ''
@@ -345,10 +345,10 @@ display:
           separator: ', '
           field_api_classes: false
           plugin_id: field
-        field_sfa_posted:
-          id: field_sfa_posted
-          table: node__field_sfa_posted
-          field: field_sfa_posted
+        field_posted:
+          id: field_posted
+          table: node__field_posted
+          field: field_posted
           relationship: none
           group_type: group
           admin_label: ''
@@ -477,14 +477,14 @@ display:
           table: node_field_data
           field: type
           value:
-            sfa_social_post: sfa_social_post
+            social_post: social_post
           entity_type: node
           entity_field: type
           plugin_id: bundle
-        field_sfa_platform_value:
-          id: field_sfa_platform_value
-          table: node__field_sfa_platform
-          field: field_sfa_platform_value
+        field_platform_value:
+          id: field_platform_value
+          table: node__field_platform
+          field: field_platform_value
           relationship: none
           group_type: group
           admin_label: ''
@@ -493,12 +493,12 @@ display:
           group: 1
           exposed: true
           expose:
-            operator_id: field_sfa_platform_value_op
-            label: 'Platform (field_sfa_platform)'
+            operator_id: field_platform_value_op
+            label: 'Platform (field_platform)'
             description: null
             use_operator: false
-            operator: field_sfa_platform_value_op
-            identifier: field_sfa_platform_value
+            operator: field_platform_value_op
+            identifier: field_platform_value
             required: false
             remember: false
             multiple: false
@@ -508,7 +508,7 @@ display:
           group_info:
             label: Platform
             description: ''
-            identifier: field_sfa_platform_value
+            identifier: field_platform_value
             optional: true
             widget: select
             multiple: false
@@ -530,10 +530,10 @@ display:
                 value: Instagram
           plugin_id: string
       sorts:
-        field_sfa_posted_value:
-          id: field_sfa_posted_value
-          table: node__field_sfa_posted
-          field: field_sfa_posted_value
+        field_posted_value:
+          id: field_posted_value
+          table: node__field_posted
+          field: field_posted_value
           relationship: none
           group_type: group
           admin_label: ''
@@ -560,10 +560,10 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.field_sfa_id'
-        - 'config:field.storage.node.field_sfa_platform'
-        - 'config:field.storage.node.field_sfa_post'
-        - 'config:field.storage.node.field_sfa_posted'
+        - 'config:field.storage.node.field_id'
+        - 'config:field.storage.node.field_platform'
+        - 'config:field.storage.node.field_post'
+        - 'config:field.storage.node.field_posted'
   page_1:
     display_plugin: page
     id: page_1
@@ -591,7 +591,7 @@ display:
         - 'user.node_grants:view'
         - user.permissions
       tags:
-        - 'config:field.storage.node.field_sfa_id'
-        - 'config:field.storage.node.field_sfa_platform'
-        - 'config:field.storage.node.field_sfa_post'
-        - 'config:field.storage.node.field_sfa_posted'
+        - 'config:field.storage.node.field_id'
+        - 'config:field.storage.node.field_platform'
+        - 'config:field.storage.node.field_post'
+        - 'config:field.storage.node.field_posted'
