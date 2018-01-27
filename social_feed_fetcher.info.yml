@@ -1,4 +1,4 @@
-name: 'Social Feed Fetcher'
+name: Social Feed Fetcher
 type: module
 description: 'Fetching social feeds from Facebook, Twitter, Instagram, and aggregates them into a content type.'
 package: Other
