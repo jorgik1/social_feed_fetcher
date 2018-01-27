@@ -1,5 +1,5 @@
 social_feed_fetcher.settings:
-  path: '/admin/structure/socialfeed/social_feed_settings'
+  path: '/admin/config/socialfeed/social_feed_settings'
   defaults:
     _form: '\Drupal\social_feed_fetcher\Form\SocialPostSettingsForm'
     _title: 'Social Feed Settings'
