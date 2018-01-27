@@ -19,8 +19,8 @@ content:
   links:
     weight: 100
 hidden:
-  field_sfa_image: true
-  field_sfa_link: true
-  field_sfa_platform: true
-  field_sfa_post: true
-  field_sfa_posted: true
+  field_sp_image: true
+  field_link: true
+  field_platform: true
+  field_post: true
+  field_posted: true

@@ -7,7 +7,7 @@ dependencies:
   module:
     - link
 id: node.social_post.field_sp_image
-field_name: field_image
+field_name: field_sp_image
 entity_type: node
 bundle: social_post
 label: Image

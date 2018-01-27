@@ -19,14 +19,14 @@ targetEntityType: node
 bundle: social_post
 mode: default
 content:
-  field_sfa_id:
+  field_id:
     weight: 106
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
-  field_sfa_image:
+  field_sp_image:
     weight: 104
     label: above
     settings:
@@ -37,7 +37,7 @@ content:
       target: ''
     third_party_settings: {  }
     type: link
-  field_sfa_link:
+  field_link:
     weight: 103
     label: above
     settings:
@@ -48,20 +48,20 @@ content:
       target: ''
     third_party_settings: {  }
     type: link
-  field_sfa_platform:
+  field_platform:
     weight: 105
     label: above
     settings:
       link_to_entity: false
     third_party_settings: {  }
     type: string
-  field_sfa_post:
+  field_post:
     weight: 101
     label: above
     settings: {  }
     third_party_settings: {  }
     type: text_default
-  field_sfa_posted:
+  field_posted:
     weight: 102
     label: above
     settings:
