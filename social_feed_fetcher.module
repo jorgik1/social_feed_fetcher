@@ -5,8 +5,6 @@
  * Social Feed Fetcher Module.
  */
 
-use Drupal\node\Entity\Node;
-
 /**
  * Cron job to pull social feeds, as configured by module settings.
  *
@@ -40,11 +38,16 @@ function social_feed_fetcher_cron() {
     /** @var \Drupal\socialfeed\Services\TwitterPostCollector $twitter */
     $twitter = \Drupal::service('socialfeed.twitter');
 
+    /** @var \Drupal\social_feed_fetcher\PluginNodeProcessorManager $node_processor_manager */
+    $node_processor_manager = \Drupal::service('plugin.manager.node_processor');
+
     // Get facebook posts, if enabled.
     $facebook_count = 0;
     if ($config->get('facebook.enabled') == TRUE) {
       $facebook->setFacebookClient();
       $service = 'facebook';
+      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\FacebookNodeProcessor $facebook_processor */
+      $facebook_processor = $node_processor_manager->createInstance('facebook_processor');
       // Get all recent posts facebook user.
       $post_types = $config_facebook->get('all_types');
       if (!$post_types) {
@@ -60,13 +63,15 @@ function social_feed_fetcher_cron() {
         drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $facebook_count += social_feed_fetcher_create_node_facebook_service($item, $service);
+        $facebook_count += $facebook_processor->processItem($service, $item);
       }
     }
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter.enabled') == TRUE) {
       $service = 'twitter';
+      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\TwitterNodeProcessor $twitter_processor */
+      $twitter_processor = $node_processor_manager->createInstance('twitter_processor');
       $twitter->setTwitterClient();
       try {
         $posts = $twitter->getPosts($config_twitter->get('tweets_count'));
@@ -74,13 +79,15 @@ function social_feed_fetcher_cron() {
         drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $twitter_count += social_feed_fetcher_create_node_twitter_service($item, $service);
+        $twitter_count += $twitter_processor->processItem($service, $item);
       }
     }
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram.enabled') == TRUE) {
       $service = 'instagram';
+      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\InstagramNodeProcessor $instagram_processor */
+      $instagram_processor = $node_processor_manager->createInstance('instagram_processor');
       $instagram->setInstagramClient();
       try {
         $posts = $instagram->getPosts($config_instagram->get('picture_count'), $config_instagram->get('picture_resolution'));
@@ -88,7 +95,7 @@ function social_feed_fetcher_cron() {
         drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $instagram_count += social_feed_fetcher_create_node_instagram_service($item, $service);
+        $instagram_count += $instagram_processor->processItem($service, $item);
       }
     }
 
@@ -129,137 +136,6 @@ function social_feed_fetcher_linkify($text) {
         . $match[2] . $match[3] . $match[4] . '</a>';
     }, htmlspecialchars($text));
   return $text;
-}
-
-/**
- * Create the Social Post node, if it does not exist.
- */
-function social_feed_fetcher_create_node_twitter_service($item, $service_name) {
-  // We access our configuration.
-  $config = \Drupal::configFactory()
-    ->getEditable('social_feed_fetcher.settings');
-  $query = \Drupal::entityQuery('node')
-    ->condition('status', 1)
-    ->condition('type', 'social_post')
-    ->condition('field_id', $item->id);
-  $entity_ids = $query->execute();
-  if (empty($entity_ids)) {
-    $time = new Drupal\Core\Datetime\DrupalDateTime($item->created_at);
-    /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
-    $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-    $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-    $node = Node::create([
-      'type' => 'social_post',
-      'title' => 'Post ID: ' . $item->id,
-      'field_platform' => ucwords($service_name),
-      'field_id' => $item->id,
-      'field_post' => [
-        'value' => social_feed_fetcher_linkify(html_entity_decode($item->text)),
-        'format' => $config->get('formats.post_format'),
-      ],
-      'field_link' => [
-        'uri' => $item->entities->urls[0]->url,
-        'title' => '',
-        'options' => [],
-      ],
-      'field_sp_image' => [
-        'target_id' => social_feed_fetcher_save_file($item->entities->media[0]->media_url_https,'public://twitter/'),
-      ],
-      'field_posted' => $string,
-    ]);
-    $node->save();
-    return TRUE;
-  }
-  return FALSE;
-}
-
-/**
- * Create the Social Post node, if it does not exist.
- */
-function social_feed_fetcher_create_node_facebook_service($item, $service_name) {
-  // We access our configuration.
-  $config = \Drupal::configFactory()
-    ->getEditable('social_feed_fetcher.settings');
-  $query = \Drupal::entityQuery('node')
-    ->condition('status', 1)
-    ->condition('type', 'social_post')
-    ->condition('field_id', $item['id']);
-  $entity_ids = $query->execute();
-  if (empty($entity_ids)) {
-    $time = new Drupal\Core\Datetime\DrupalDateTime($item['created_time']);
-    /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
-    $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-    $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-    $node = Node::create([
-      'type' => 'social_post',
-      'title' => 'Post ID: ' . $item['id'],
-      'field_platform' => ucwords($service_name),
-      'field_id' => $item['id'],
-      'field_post' => [
-        'value' => social_feed_fetcher_linkify(html_entity_decode($item['message'])),
-        'format' => $config->get('formats.post_format'),
-      ],
-      'field_link' => [
-        'uri' => $item['link'],
-        'title' => '',
-        'options' => [],
-      ],
-      'field_sp_image' => [
-        'target_id' => social_feed_fetcher_save_file($item['picture'],'public://facebook/'),
-      ],
-      'field_posted' => [
-        'value' => $string
-      ],
-    ]);
-    $node->save();
-    return TRUE;
-  }
-  return FALSE;
-}
-
-/**
- * Create the Social Post node, if it does not exist.
- */
-function social_feed_fetcher_create_node_instagram_service($item, $service_name) {
-  // We access our configuration.
-  $config = \Drupal::configFactory()
-    ->getEditable('social_feed_fetcher.settings');
-  $query = \Drupal::entityQuery('node')
-    ->condition('status', 1)
-    ->condition('type', 'social_post')
-    ->condition('field_id', $item['raw']->id);
-  $entity_ids = $query->execute();
-  if (empty($entity_ids)) {
-    $time = new Drupal\Core\Datetime\DrupalDateTime();
-    /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
-    $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-    $time->setTimestamp($item['raw']->created_time);
-    $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-    $node = Node::create([
-      'type' => 'social_post',
-      'title' => 'Post ID: ' . $item['raw']->id,
-      'field_platform' => ucwords($service_name),
-      'field_id' => $item['raw']->id,
-      'field_post' => [
-        'value' => social_feed_fetcher_linkify(html_entity_decode($item['raw']->caption->text)),
-        'format' => $config->get('formats.post_format'),
-      ],
-      'field_link' => [
-        'uri' => $item['raw']->link,
-        'title' => '',
-        'options' => [],
-      ],
-      'field_sp_image' => [
-        'target_id' => social_feed_fetcher_save_file($item['media_url'],'public://instagram/'),
-      ],
-      'field_posted' => [
-        'value' => $string
-      ],
-    ]);
-    $node->save();
-    return TRUE;
-  }
-  return FALSE;
 }
 
 /**
