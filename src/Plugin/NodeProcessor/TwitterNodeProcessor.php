@@ -2,11 +2,12 @@
 
 namespace Drupal\social_feed_fetcher\Plugin\NodeProcessor;
 
-use Drupal\node\Entity\Node;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
 
 /**
  * Class TwitterNodeProcessor
+ *
  * @package Drupal\social_feed_fetcher\Plugin\NodeProcessor
  *
  * @PluginNodeProcessor(
@@ -16,6 +17,11 @@ use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
  */
 class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
 
+  /**
+   * {@inheritdoc}
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function processItem($source, $data_item) {
     $query = $this->entityStorage->getQuery()
       ->condition('status', 1)
@@ -23,11 +29,11 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
       ->condition('field_id', $data_item->id);
     $entity_ids = $query->execute();
     if (empty($entity_ids)) {
-      $time = new \Drupal\Core\Datetime\DrupalDateTime($data_item->created_at);
+      $time = new DrupalDateTime($data_item->created_at);
       /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
       $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
       $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-      $node = Node::create([
+      $node = $this->entityStorage->create([
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item->id,
         'field_platform' => ucwords($source),
@@ -42,12 +48,11 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item->entities->media[0]->media_url_https,'public://twitter/'),
+          'target_id' => social_feed_fetcher_save_file($data_item->entities->media[0]->media_url_https, 'public://twitter/'),
         ],
         'field_posted' => $string,
       ]);
-      $node->save();
-      return TRUE;
+      return $node->save();
     }
     return FALSE;
   }
@@ -59,7 +64,7 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
    *
    * @return $this
    */
-  public function setStorage($enitytStorage){
+  public function setStorage($enitytStorage) {
     $this->entityStorage = $enitytStorage;
     return $this;
   }
@@ -71,7 +76,7 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
    *
    * @return $this
    */
-  public function setConfig($config){
+  public function setConfig($config) {
     $this->config = $config;
     return $this;
   }

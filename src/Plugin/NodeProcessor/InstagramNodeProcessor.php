@@ -3,6 +3,7 @@
 namespace Drupal\social_feed_fetcher\Plugin\NodeProcessor;
 
 use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\Entity\EntityTypeManager;
 use Drupal\node\Entity\Node;
 use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
@@ -19,6 +20,11 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
 
+  /**
+   * {@inheritdoc}
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function processItem($source, $data_item) {
     $query = $this->entityStorage->getQuery()
       ->condition('status', 1)
@@ -27,11 +33,11 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
     $entity_ids = $query->execute();
     if (empty($entity_ids)) {
       /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
-      $time = new \Drupal\Core\Datetime\DrupalDateTime();
+      $time = new DrupalDateTime();
       $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
       $time->setTimestamp($data_item['raw']->created_time);
       $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-      $node = Node::create([
+      $node = $this->entityStorage->create([
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item['raw']->id,
         'field_platform' => ucwords($source),
@@ -52,8 +58,7 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
           'value' => $string
         ],
       ]);
-      $node->save();
-      return TRUE;
+      return $node->save();
     }
     return FALSE;
   }

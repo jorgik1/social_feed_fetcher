@@ -16,6 +16,11 @@ use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
  */
 class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
 
+  /**
+   * {@inheritdoc}
+   *
+   * @throws \Drupal\Core\Entity\EntityStorageException
+   */
   public function processItem($source, $data_item) {
     $query = $this->entityStorage->getQuery()
       ->condition('status', 1)
@@ -27,7 +32,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
       /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
       $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
       $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
-      $node = Node::create([
+      $node = $this->entityStorage->create([
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item['id'],
         'field_platform' => ucwords($source),
@@ -48,8 +53,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
           'value' => $string
         ],
       ]);
-      $node->save();
-      return TRUE;
+      return $node->save();
     }
     return FALSE;
   }
