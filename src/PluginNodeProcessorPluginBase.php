@@ -3,6 +3,7 @@
 namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Datetime\DrupalDateTime;
 
 abstract class PluginNodeProcessorPluginBase extends PluginBase implements PluginNodeProcessorPluginInterface {
 
@@ -45,4 +46,37 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
     return TRUE;
   }
 
+  /**
+   * Helper function
+   * Check if post with ID doesn't exist
+   *
+   * @param int $data_item_id
+   *
+   * @return array|int
+   */
+  public function isPostIdExist($data_item_id){
+    if($data_item_id) {
+      $query = $this->entityStorage->getQuery()
+        ->condition('status', 1)
+        ->condition('type', 'social_post')
+        ->condition('field_id', $data_item_id);
+      return $query->execute();
+    }
+  }
+
+  /**
+   * Helper function for getting Drupal based time entry.
+   *
+   * @param $time_entry
+   *    Time format from social network.
+   *
+   * @return string
+   *   Formatted time string.
+   */
+  public function setPostTime($time_entry){
+    /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
+    $time = new DrupalDateTime($time_entry);
+    $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
+    return $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
+  }
 }

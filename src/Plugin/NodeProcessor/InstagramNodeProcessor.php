@@ -26,12 +26,7 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function processItem($source, $data_item) {
-    $query = $this->entityStorage->getQuery()
-      ->condition('status', 1)
-      ->condition('type', 'social_post')
-      ->condition('field_id', $data_item['raw']->id);
-    $entity_ids = $query->execute();
-    if (empty($entity_ids)) {
+    if (!$this->isPostIdExist($data_item['raw']->id)) {
       /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
       $time = new DrupalDateTime();
       $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));

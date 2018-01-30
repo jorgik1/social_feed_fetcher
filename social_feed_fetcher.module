@@ -9,17 +9,12 @@
  * Cron job to pull social feeds, as configured by module settings.
  *
  * @throws \Facebook\Exceptions\FacebookSDKException
+ * @throws \Drupal\Core\Entity\EntityStorageException
  */
 function social_feed_fetcher_cron() {
   // We access our configuration.
   $config = \Drupal::configFactory()
     ->getEditable('social_feed_fetcher.settings');
-  $config_facebook = \Drupal::configFactory()
-    ->getEditable('socialfeed.facebooksettings');
-  $config_twitter = \Drupal::configFactory()
-    ->getEditable('socialfeed.twittersettings');
-  $config_instagram = \Drupal::configFactory()
-    ->getEditable('socialfeed.instagramsettings');
 
   $interval = $config->get('cron.interval');
 
@@ -31,19 +26,16 @@ function social_feed_fetcher_cron() {
 
   if ($request_time >= $next_execution) {
 
-    /** @var \Drupal\socialfeed\Services\FacebookPostCollector $facebook */
-    $facebook = \Drupal::service('socialfeed.facebook');
-    /** @var \Drupal\socialfeed\Services\InstagramPostCollector $instagram */
-    $instagram = \Drupal::service('socialfeed.instagram');
-    /** @var \Drupal\socialfeed\Services\TwitterPostCollector $twitter */
-    $twitter = \Drupal::service('socialfeed.twitter');
-
     /** @var \Drupal\social_feed_fetcher\PluginNodeProcessorManager $node_processor_manager */
     $node_processor_manager = \Drupal::service('plugin.manager.node_processor');
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
     if ($config->get('facebook.enabled') == TRUE) {
+      $config_facebook = \Drupal::configFactory()
+        ->getEditable('socialfeed.facebooksettings');
+      /** @var \Drupal\socialfeed\Services\FacebookPostCollector $facebook */
+      $facebook = \Drupal::service('socialfeed.facebook');
       $facebook->setFacebookClient();
       $service = 'facebook';
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\FacebookNodeProcessor $facebook_processor */
@@ -69,6 +61,10 @@ function social_feed_fetcher_cron() {
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter.enabled') == TRUE) {
+      $config_twitter = \Drupal::configFactory()
+        ->getEditable('socialfeed.twittersettings');
+      /** @var \Drupal\socialfeed\Services\TwitterPostCollector $twitter */
+      $twitter = \Drupal::service('socialfeed.twitter');
       $service = 'twitter';
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\TwitterNodeProcessor $twitter_processor */
       $twitter_processor = $node_processor_manager->createInstance('twitter_processor');
@@ -85,6 +81,10 @@ function social_feed_fetcher_cron() {
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram.enabled') == TRUE) {
+      $config_instagram = \Drupal::configFactory()
+        ->getEditable('socialfeed.instagramsettings');
+      /** @var \Drupal\socialfeed\Services\InstagramPostCollector $instagram */
+      $instagram = \Drupal::service('socialfeed.instagram');
       $service = 'instagram';
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\InstagramNodeProcessor $instagram_processor */
       $instagram_processor = $node_processor_manager->createInstance('instagram_processor');

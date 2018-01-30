@@ -44,6 +44,9 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
     $this->entityStorage = $entityTypeManager->getStorage('node');
   }
 
+  /**
+   * {@inheritdoc}
+   */
   public function createInstance($plugin_id, array $configuration = array()) {
     $instance = parent::createInstance($plugin_id, $configuration);
     $instance->setConfig($this->config);

@@ -7,6 +7,7 @@ use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
 
 /**
  * Class FacebookNodeProcessor
+ *
  * @package Drupal\social_feed_fetcher\Plugin\NodeProcessor
  *
  * @PluginNodeProcessor(
@@ -22,16 +23,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
    * @throws \Drupal\Core\Entity\EntityStorageException
    */
   public function processItem($source, $data_item) {
-    $query = $this->entityStorage->getQuery()
-      ->condition('status', 1)
-      ->condition('type', 'social_post')
-      ->condition('field_id', $data_item['id']);
-    $entity_ids = $query->execute();
-    if (empty($entity_ids)) {
-      $time = new \Drupal\Core\Datetime\DrupalDateTime($data_item['created_time']);
-      /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
-      $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-      $string = $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
+    if (!$this->isPostIdExist($data_item['id'])) {
       $node = $this->entityStorage->create([
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item['id'],
@@ -47,10 +39,10 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item['picture'],'public://facebook/'),
+          'target_id' => social_feed_fetcher_save_file($data_item['picture'], 'public://facebook/'),
         ],
         'field_posted' => [
-          'value' => $string
+          'value' => $this->setPostTime($data_item['created_time']),
         ],
       ]);
       return $node->save();
@@ -65,7 +57,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
    *
    * @return $this
    */
-  public function setStorage($enitytStorage){
+  public function setStorage($enitytStorage) {
     $this->entityStorage = $enitytStorage;
     return $this;
   }
@@ -77,7 +69,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
    *
    * @return $this
    */
-  public function setConfig($config){
+  public function setConfig($config) {
     $this->config = $config;
     return $this;
   }
