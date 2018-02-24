@@ -2,8 +2,3 @@ services:
   plugin.manager.node_processor:
     class: Drupal\social_feed_fetcher\PluginNodeProcessorManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory','@entity_type.manager']
-  social_feed_fetcher.facebook:
-    class: Drupal\social_feed_fetcher\Services\FbPostCollector
-    arguments: ['@config.factory']
-    calls:
-      - ['setFacebookClient']

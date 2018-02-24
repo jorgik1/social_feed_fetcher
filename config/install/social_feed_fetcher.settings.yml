@@ -1,12 +1,18 @@
-fb_page_name: ''
-fb_app_id: ''
-fb_secret_key: ''
-fb_no_feeds: 10
+fb.page_name: ''
+fb.app_id: ''
+fb.secret_key: ''
+fb.no_feeds: 10
 
-client_id: ''
-redirect_uri: ''
-auth_link: ''
-access_token: ''
-picture_count: 3
-picture_resolution: ''
-post_link: ''
+in.client_id: ''
+in.redirect_uri: ''
+in.auth_link: ''
+in.access_token: ''
+in.picture_count: 3
+in.picture_resolution: ''
+in.post_link: ''
+
+tw.consumer_key: ''
+tw.consumer_secret: ''
+tw.access_token: ''
+tw.access_token_secret: ''
+tw.count: 3
