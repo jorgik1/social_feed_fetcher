@@ -6,6 +6,16 @@ namespace Drupal\social_feed_fetcher\Plugin\SocialDataProvider;
 use Abraham\TwitterOAuth\TwitterOAuth;
 use Drupal\social_feed_fetcher\SocialDataProviderPluginBase;
 
+/**
+ * Class TwitterDataProvider
+ *
+ * @package Drupal\social_feed_fetcher\Plugin\SocialDataProvider
+ *
+ * @SocialDataProvider(
+ *   id = "twitter",
+ *   label = @Translation("Twitter data provider")
+ * )
+ */
 class TwitterDataProvider extends SocialDataProviderPluginBase {
 
   /**
