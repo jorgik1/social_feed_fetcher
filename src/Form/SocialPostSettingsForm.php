@@ -8,6 +8,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\State\StateInterface;
+use Drupal\Core\Url;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -104,41 +105,41 @@ class SocialPostSettingsForm extends ConfigFormBase {
     ];
 
     $form['facebook']['fb_page_name'] = [
-      '#type'          => 'textfield',
-      '#title'         => $this->t('Facebook Page Name'),
+      '#type' => 'textfield',
+      '#title' => $this->t('Facebook Page Name'),
       '#default_value' => $config->get('fb.page_name'),
-      '#description'   => $this->t('eg. If your Facebook page URL is this http://www.facebook.com/YOUR_PAGE_NAME, <br />then you just need to add this YOUR_PAGE_NAME above.'),
-      '#size'          => 60,
-      '#maxlength'     => 100,
-      '#required'      => TRUE,
+      '#description' => $this->t('eg. If your Facebook page URL is this http://www.facebook.com/YOUR_PAGE_NAME, <br />then you just need to add this YOUR_PAGE_NAME above.'),
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
     ];
 
     $form['facebook']['fb_app_id'] = [
-      '#type'          => 'textfield',
-      '#title'         => $this->t('Facebook App ID'),
+      '#type' => 'textfield',
+      '#title' => $this->t('Facebook App ID'),
       '#default_value' => $config->get('fb.app_id'),
-      '#size'          => 60,
-      '#maxlength'     => 100,
-      '#required'      => TRUE,
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
     ];
 
     $form['facebook']['fb_secret_key'] = [
-      '#type'          => 'textfield',
-      '#title'         => $this->t('Facebook Secret Key'),
+      '#type' => 'textfield',
+      '#title' => $this->t('Facebook Secret Key'),
       '#default_value' => $config->get('fb.secret_key'),
-      '#size'          => 60,
-      '#maxlength'     => 100,
-      '#required'      => TRUE,
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
     ];
 
     $form['facebook']['fb_no_feeds'] = [
-      '#type'          => 'number',
-      '#title'         => $this->t('Number of Feeds'),
+      '#type' => 'number',
+      '#title' => $this->t('Number of Feeds'),
       '#default_value' => $config->get('fb.no_feeds'),
-      '#size'          => 60,
-      '#maxlength'     => 60,
-      '#max'           => 100,
-      '#min'           => 1,
+      '#size' => 60,
+      '#maxlength' => 60,
+      '#max' => 100,
+      '#min' => 1,
     ];
 
 
@@ -164,6 +165,81 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#type' => 'checkbox',
       '#title' => $this->t('Enable'),
       '#default_value' => $config->get('instagram.enabled'),
+    ];
+    $form['instagram']['header']['#markup'] = $this->t('To get Client ID you need to manage clients from your instagram account detailed information <a href="@admin" target="@blank">here</a>.', [
+      '@admin' => Url::fromRoute('help.page',
+        ['name' => 'socialfeed'])->toString(),
+      '@blank' => '_blank',
+    ]);
+    $form['instagram']['client_id'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Client ID'),
+      '#description' => $this->t('Client ID from Instagram account'),
+      '#default_value' => $config->get('client_id'),
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
+    ];
+    $form['instagram']['redirect_uri'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Redirect URI'),
+      '#description' => $this->t('Redirect URI from Instagram account'),
+      '#default_value' => $config->get('redirect_uri'),
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
+    ];
+    $form['instagram']['auth_link'] = [
+      '#type' => 'item',
+      '#title' => $this->t('Generate Instagram Access Token'),
+      '#description' => $this->t('Access this URL in your browser https://instagram.com/oauth/authorize/?client_id=&lt;your_client_id&gt;&redirect_uri=&lt;your_redirect_uri&gt;&response_type=token, you will get the access token.'),
+      '#markup' => $this->t('Check <a href="@this" target="_blank">this</a> article.', [
+        '@this' => Url::fromUri('http://jelled.com/instagram/access-token')
+          ->toString(),
+      ]),
+    ];
+    $form['instagram']['access_token'] = [
+      '#type' => 'textfield',
+      '#title' => $this->t('Access Token'),
+      '#default_value' => $config->get('access_token'),
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#required' => TRUE,
+    ];
+    $form['instagram']['picture_count'] = [
+      '#type' => 'number',
+      '#title' => $this->t('Picture Count'),
+      '#default_value' => $config->get('picture_count'),
+      '#size' => 60,
+      '#maxlength' => 100,
+      '#min' => 1,
+    ];
+    if ($config->get('access_token')) {
+      $form['instagram']['feed'] = [
+        '#type' => 'item',
+        '#title' => $this->t('Feed URL'),
+        '#markup' => $this->t('https://api.instagram.com/v1/users/self/feed?access_token=@access_token&count=@picture_count',
+          [
+            '@access_token' => $config->get('access_token'),
+            '@picture_count' => $config->get('picture_count'),
+          ]
+        ),
+      ];
+    }
+    $form['instagram']['picture_resolution'] = [
+      '#type' => 'select',
+      '#title' => $this->t('Picture Resolution'),
+      '#default_value' => $config->get('picture_resolution'),
+      '#options' => [
+        'thumbnail' => $this->t('Thumbnail'),
+        'low_resolution' => $this->t('Low Resolution'),
+        'standard_resolution' => $this->t('Standard Resolution'),
+      ],
+    ];
+    $form['instagram']['post_link'] = [
+      '#type' => 'checkbox',
+      '#title' => $this->t('Show post URL'),
+      '#default_value' => $config->get('post_link'),
     ];
 
     if ($this->currentUser->hasPermission('administer site configuration')) {
@@ -204,20 +280,20 @@ class SocialPostSettingsForm extends ConfigFormBase {
 
     $allowed_formats = filter_formats();
     foreach (filter_formats() as $format_name => $format) {
-       $allowed_formats[$format_name] = $format->label();
+      $allowed_formats[$format_name] = $format->label();
     }
-    
+
     $form['formats'] = [
       '#type' => 'details',
       '#title' => $this->t('Post Format'),
       '#open' => TRUE,
     ];
-   
+
     $form['formats']['formats_post_format'] = [
       '#type' => 'select',
       '#title' => $this->t('Post format'),
       '#default_value' => $config->get('formats.post_format'),
-      '#options' => $allowed_formats
+      '#options' => $allowed_formats,
     ];
 
     return parent::buildForm($form, $form_state);
@@ -258,6 +334,13 @@ class SocialPostSettingsForm extends ConfigFormBase {
       ->set('fb.no_feeds', $form_state->getValue('fb_no_feeds'))
       ->set('twitter.enabled', $form_state->getValue('twitter_enabled'))
       ->set('instagram.enabled', $form_state->getValue('instagram_enabled'))
+      ->set('client_id', $form_state->getValue('client_id'))
+      ->set('redirect_uri', $form_state->getValue('redirect_uri'))
+      ->set('auth_link', $form_state->getValue('auth_link'))
+      ->set('access_token', $form_state->getValue('access_token'))
+      ->set('picture_count', $form_state->getValue('picture_count'))
+      ->set('picture_resolution', $form_state->getValue('picture_resolution'))
+      ->set('post_link', $form_state->getValue('post_link'))
       ->set('formats.post_format', $form_state->getValue('formats_post_format'))
       ->save();
 

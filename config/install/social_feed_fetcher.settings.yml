@@ -2,3 +2,11 @@ fb_page_name: ''
 fb_app_id: ''
 fb_secret_key: ''
 fb_no_feeds: 10
+
+client_id: ''
+redirect_uri: ''
+auth_link: ''
+access_token: ''
+picture_count: 3
+picture_resolution: ''
+post_link: ''
