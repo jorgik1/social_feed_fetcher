@@ -38,11 +38,7 @@ abstract class SocialDataProviderPluginBase extends PluginBase implements Socail
     return $this->pluginDefinition['label'];
   }
 
-  public function getPosts() {
-    return [];
-  }
+  abstract public function getPosts();
 
-  public function setClient() {
-    return $this->client;
-  }
+  abstract public function setClient();
 }

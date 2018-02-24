@@ -41,18 +41,18 @@ class InstagramDataProvider {
    * @param \MetzWeb\Instagram\Instagram|null $instagram
    *   Instagram client.
    */
-  public function __construct(ConfigFactoryInterface $configFactory, Instagram $instagram = NULL) {
+  public function __construct(ConfigFactoryInterface $configFactory) {
     $config            = $configFactory->get('socialfeed.instagramsettings');
     $this->apiKey      = $config->get('client_id');
     $this->accessToken = $config->get('access_token');
-
-    $this->instagram = $instagram;
   }
 
   /**
    * Set the Instagram client.
+   *
+   * @throws \Exception
    */
-  public function setInstagramClient() {
+  public function setClient() {
     if (NULL === $this->instagram) {
       $this->instagram = new Instagram($this->apiKey);
       $this->instagram->setAccessToken($this->accessToken);
