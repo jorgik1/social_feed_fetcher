@@ -103,6 +103,44 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('facebook.enabled'),
     ];
 
+    $form['facebook']['fb_page_name'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Facebook Page Name'),
+      '#default_value' => $config->get('fb.page_name'),
+      '#description'   => $this->t('eg. If your Facebook page URL is this http://www.facebook.com/YOUR_PAGE_NAME, <br />then you just need to add this YOUR_PAGE_NAME above.'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#required'      => TRUE,
+    ];
+
+    $form['facebook']['fb_app_id'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Facebook App ID'),
+      '#default_value' => $config->get('fb.app_id'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#required'      => TRUE,
+    ];
+
+    $form['facebook']['fb_secret_key'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Facebook Secret Key'),
+      '#default_value' => $config->get('fb.secret_key'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#required'      => TRUE,
+    ];
+
+    $form['facebook']['fb_no_feeds'] = [
+      '#type'          => 'number',
+      '#title'         => $this->t('Number of Feeds'),
+      '#default_value' => $config->get('fb.no_feeds'),
+      '#size'          => 60,
+      '#maxlength'     => 60,
+      '#max'           => 100,
+      '#min'           => 1,
+    ];
+
 
     $form['twitter'] = [
       '#type' => 'details',
@@ -214,6 +252,10 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $this->config('social_feed_fetcher.settings')
       ->set('cron.interval', $form_state->getValue('social_feed_fetcher_interval'))
       ->set('facebook.enabled', $form_state->getValue('facebook_enabled'))
+      ->set('fb.page_name', $form_state->getValue('fb_page_name'))
+      ->set('fb.app_id', $form_state->getValue('fb_app_id'))
+      ->set('fb.secret_key', $form_state->getValue('fb_secret_key'))
+      ->set('fb.no_feeds', $form_state->getValue('fb_no_feeds'))
       ->set('twitter.enabled', $form_state->getValue('twitter_enabled'))
       ->set('instagram.enabled', $form_state->getValue('instagram_enabled'))
       ->set('formats.post_format', $form_state->getValue('formats_post_format'))
