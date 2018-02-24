@@ -6,9 +6,14 @@ use Drupal\social_feed_fetcher\SocialDataProviderPluginBase;
 use MetzWeb\Instagram\Instagram;
 
 /**
- * Class InstagramPostCollector.
+ * Class InstagramDataProvider
  *
- * @package Drupal\socialfeed
+ * @package Drupal\social_feed_fetcher\Plugin\SocialDataProvider
+ *
+ * @SocialDataProvider(
+ *   id = "instagram",
+ *   label = @Translation("Instagram data provider")
+ * )
  */
 class InstagramDataProvider extends SocialDataProviderPluginBase {
 
