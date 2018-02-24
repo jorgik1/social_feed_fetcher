@@ -39,6 +39,18 @@ abstract class SocialDataProviderPluginBase extends PluginBase implements Socail
   }
 
   /**
+   * Setter for Config.
+   *
+   * @param $config
+   *
+   * @return $this
+   */
+  public function setConfig($config){
+    $this->config = $config;
+    return $this;
+  }
+
+  /**
    * {@inheritdoc}
    */
   abstract public function getPosts($count);
