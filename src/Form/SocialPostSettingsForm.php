@@ -107,7 +107,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['facebook']['fb_page_name'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Facebook Page Name'),
-      '#default_value' => $config->get('fb.page_name'),
+      '#default_value' => $config->get('fb_page_name'),
       '#description' => $this->t('eg. If your Facebook page URL is this http://www.facebook.com/YOUR_PAGE_NAME, <br />then you just need to add this YOUR_PAGE_NAME above.'),
       '#size' => 60,
       '#maxlength' => 100,
@@ -117,7 +117,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['facebook']['fb_app_id'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Facebook App ID'),
-      '#default_value' => $config->get('fb.app_id'),
+      '#default_value' => $config->get('fb_app_id'),
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
@@ -126,7 +126,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['facebook']['fb_secret_key'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Facebook Secret Key'),
-      '#default_value' => $config->get('fb.secret_key'),
+      '#default_value' => $config->get('fb_secret_key'),
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
@@ -135,7 +135,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['facebook']['fb_no_feeds'] = [
       '#type' => 'number',
       '#title' => $this->t('Number of Feeds'),
-      '#default_value' => $config->get('fb.no_feeds'),
+      '#default_value' => $config->get('fb_no_feeds'),
       '#size' => 60,
       '#maxlength' => 60,
       '#max' => 100,
@@ -158,7 +158,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['twitter']['tw_consumer_key'] = [
       '#type'          => 'textfield',
       '#title'         => $this->t('Twitter Consumer Key'),
-      '#default_value' => $config->get('tw.consumer_key'),
+      '#default_value' => $config->get('tw_consumer_key'),
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
@@ -166,7 +166,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['twitter']['tw_consumer_secret'] = [
       '#type'          => 'textfield',
       '#title'         => $this->t('Twitter Consumer Secret'),
-      '#default_value' => $config->get('tw.consumer_secret'),
+      '#default_value' => $config->get('tw_consumer_secret'),
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
@@ -174,7 +174,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['twitter']['tw_access_token'] = [
       '#type'          => 'textfield',
       '#title'         => $this->t('Twitter Access Token'),
-      '#default_value' => $config->get('tw.access_token'),
+      '#default_value' => $config->get('tw_access_token'),
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
@@ -182,7 +182,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['twitter']['tw_access_token_secret'] = [
       '#type'          => 'textfield',
       '#title'         => $this->t('Twitter Access Token Secret'),
-      '#default_value' => $config->get('tw.access_token_secret'),
+      '#default_value' => $config->get('tw_access_token_secret'),
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
@@ -190,7 +190,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['twitter']['tw_count'] = [
       '#type'          => 'number',
       '#title'         => $this->t('Tweets Count'),
-      '#default_value' => $config->get('tw.count'),
+      '#default_value' => $config->get('tw_count'),
       '#size'          => 60,
       '#maxlength'     => 100,
       '#min'           => 1,
@@ -216,7 +216,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Client ID'),
       '#description' => $this->t('Client ID from Instagram account'),
-      '#default_value' => $config->get('in.client_id'),
+      '#default_value' => $config->get('in_client_id'),
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
@@ -225,7 +225,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('Redirect URI'),
       '#description' => $this->t('Redirect URI from Instagram account'),
-      '#default_value' => $config->get('in.redirect_uri'),
+      '#default_value' => $config->get('in_redirect_uri'),
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
@@ -243,7 +243,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['instagram']['in_access_token'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Access Token'),
-      '#default_value' => $config->get('in.access_token'),
+      '#default_value' => $config->get('in_access_token'),
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
@@ -251,19 +251,19 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['instagram']['in_picture_count'] = [
       '#type' => 'number',
       '#title' => $this->t('Picture Count'),
-      '#default_value' => $config->get('in.picture_count'),
+      '#default_value' => $config->get('in_picture_count'),
       '#size' => 60,
       '#maxlength' => 100,
       '#min' => 1,
     ];
-    if ($config->get('in.access_token')) {
+    if ($config->get('in_access_token')) {
       $form['instagram']['feed'] = [
         '#type' => 'item',
         '#title' => $this->t('Feed URL'),
         '#markup' => $this->t('https://api.instagram.com/v1/users/self/feed?access_token=@access_token&count=@picture_count',
           [
-            '@access_token' => $config->get('in.access_token'),
-            '@picture_count' => $config->get('in.picture_count'),
+            '@access_token' => $config->get('in_access_token'),
+            '@picture_count' => $config->get('in_picture_count'),
           ]
         ),
       ];
@@ -271,7 +271,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['instagram']['in_picture_resolution'] = [
       '#type' => 'select',
       '#title' => $this->t('Picture Resolution'),
-      '#default_value' => $config->get('in.picture_resolution'),
+      '#default_value' => $config->get('in_picture_resolution'),
       '#options' => [
         'thumbnail' => $this->t('Thumbnail'),
         'low_resolution' => $this->t('Low Resolution'),
@@ -281,7 +281,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['instagram']['in_post_link'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show post URL'),
-      '#default_value' => $config->get('in.post_link'),
+      '#default_value' => $config->get('in_post_link'),
     ];
 
     if ($this->currentUser->hasPermission('administer site configuration')) {
@@ -367,30 +367,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('social_feed_fetcher.settings')
-      ->set('cron.interval', $form_state->getValue('social_feed_fetcher_interval'))
-      ->set('facebook.enabled', $form_state->getValue('facebook_enabled'))
-      ->set('fb.page_name', $form_state->getValue('fb_page_name'))
-      ->set('fb.app_id', $form_state->getValue('fb_app_id'))
-      ->set('fb.secret_key', $form_state->getValue('fb_secret_key'))
-      ->set('fb.no_feeds', $form_state->getValue('fb_no_feeds'))
-      ->set('twitter.enabled', $form_state->getValue('twitter_enabled'))
-      ->set('tw.consumer_key', $form_state->getValue('tw_consumer_key'))
-      ->set('tw.consumer_secret', $form_state->getValue('tw_consumer_secret'))
-      ->set('tw.access_token', $form_state->getValue('tw_access_token'))
-      ->set('tw.access_token_secret', $form_state->getValue('tw_access_token_secret'))
-      ->set('tw.count', $form_state->getValue('tw_count'))
-      ->set('instagram.enabled', $form_state->getValue('instagram_enabled'))
-      ->set('in.client_id', $form_state->getValue('in_client_id'))
-      ->set('in.redirect_uri', $form_state->getValue('in_redirect_uri'))
-      ->set('in.auth_link', $form_state->getValue('in_auth_link'))
-      ->set('in.access_token', $form_state->getValue('in_access_token'))
-      ->set('in.picture_count', $form_state->getValue('in_picture_count'))
-      ->set('in.picture_resolution', $form_state->getValue('in_picture_resolution'))
-      ->set('in.post_link', $form_state->getValue('in_post_link'))
-      ->set('formats.post_format', $form_state->getValue('formats_post_format'))
-      ->save();
-
+    $config =  $this->config('social_feed_fetcher.settings');
+    foreach ($form_state->getValues() as $key => $value) {
+      $config->set($key, $value);
+    }
+    $config->save();
     parent::submitForm($form, $form_state);
   }
 

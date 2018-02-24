@@ -44,10 +44,10 @@ class TwitterDataProvider extends SocialDataProviderPluginBase {
   public function setClient() {
     if (NULL === $this->twitter) {
       $this->twitter = new TwitterOAuth(
-        $this->config->get('consumer_key'),
-        $this->config->get('consumer_secret'),
-        $this->config->get('access_token'),
-        $this->config->get('access_token_secret')
+        $this->config->get('tw_consumer_key'),
+        $this->config->get('tw_consumer_secret'),
+        $this->config->get('tw_access_token'),
+        $this->config->get('tw_access_token_secret')
       );
     }
   }

@@ -10,6 +10,7 @@
  *
  * @throws \Facebook\Exceptions\FacebookSDKException
  * @throws \Drupal\Core\Entity\EntityStorageException
+ * @throws \Exception
  */
 function social_feed_fetcher_cron() {
   // We access our configuration.
@@ -28,74 +29,63 @@ function social_feed_fetcher_cron() {
 
     /** @var \Drupal\social_feed_fetcher\PluginNodeProcessorManager $node_processor_manager */
     $node_processor_manager = \Drupal::service('plugin.manager.node_processor');
+    /** @var \Drupal\social_feed_fetcher\SocialDataProviderManager $social_data_provider_manager */
+    $social_data_provider_manager = \Drupal::service('plugin.social_data_provider.manager');
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
     if ($config->get('facebook.enabled') == TRUE) {
-      $config_facebook = \Drupal::configFactory()
-        ->getEditable('socialfeed.facebooksettings');
-      /** @var \Drupal\socialfeed\Services\FacebookPostCollector $facebook */
-      $facebook = \Drupal::service('socialfeed.facebook');
-      $facebook->setFacebookClient();
-      $service = 'facebook';
+
+      /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
+      $facebook = $social_data_provider_manager->createInstance('facebook');
+      $facebook->setClient();
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\FacebookNodeProcessor $facebook_processor */
       $facebook_processor = $node_processor_manager->createInstance('facebook_processor');
-      // Get all recent posts facebook user.
-      $post_types = $config_facebook->get('all_types');
-      if (!$post_types) {
-        $post_types = $config_facebook->get('post_type');
-      }
+
+      // Get all recent posts facebook.
       try {
-        $posts = $facebook->getPosts(
-          $config_facebook->get('page_name'),
-          $post_types,
-          $config_facebook->get('no_feeds')
-        );
+        $posts = $facebook->getPosts();
       } catch (\Exception $exception) {
-        drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
+        drupal_set_message($facebook->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $facebook_count += $facebook_processor->processItem($service, $item);
+        $facebook_count += $facebook_processor->processItem($facebook->getPluginId(), $item);
       }
     }
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter.enabled') == TRUE) {
-      $config_twitter = \Drupal::configFactory()
-        ->getEditable('socialfeed.twittersettings');
-      /** @var \Drupal\socialfeed\Services\TwitterPostCollector $twitter */
-      $twitter = \Drupal::service('socialfeed.twitter');
-      $service = 'twitter';
+
+      /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
+      $twitter = $social_data_provider_manager->createInstance('twitter');
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\TwitterNodeProcessor $twitter_processor */
       $twitter_processor = $node_processor_manager->createInstance('twitter_processor');
-      $twitter->setTwitterClient();
+      $twitter->setClient();
       try {
-        $posts = $twitter->getPosts($config_twitter->get('tweets_count'));
+        $posts = $twitter->getPosts($config->get('tw_count'));
       } catch (\Exception $exception) {
-        drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
+        drupal_set_message($twitter->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $twitter_count += $twitter_processor->processItem($service, $item);
+        $twitter_count += $twitter_processor->processItem($twitter->getPluginId(), $item);
       }
     }
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram.enabled') == TRUE) {
-      $config_instagram = \Drupal::configFactory()
-        ->getEditable('socialfeed.instagramsettings');
-      /** @var \Drupal\socialfeed\Services\InstagramPostCollector $instagram */
-      $instagram = \Drupal::service('socialfeed.instagram');
-      $service = 'instagram';
+
+      /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\InstagramDataProvider $instagram */
+      $instagram = $social_data_provider_manager->createInstance('instagram');
       /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\InstagramNodeProcessor $instagram_processor */
       $instagram_processor = $node_processor_manager->createInstance('instagram_processor');
-      $instagram->setInstagramClient();
+      $instagram->setClient();
       try {
-        $posts = $instagram->getPosts($config_instagram->get('picture_count'), $config_instagram->get('picture_resolution'));
+        $posts = $instagram->getPosts($config->get('in_picture_count'));
       } catch (\Exception $exception) {
-        drupal_set_message($service . ' ' . $exception->getMessage(), 'error');
+        drupal_set_message($instagram->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $instagram_count += $instagram_processor->processItem($service, $item);
+        $instagram_count += $instagram_processor->processItem($instagram->getPluginId(), $item);
       }
     }
 

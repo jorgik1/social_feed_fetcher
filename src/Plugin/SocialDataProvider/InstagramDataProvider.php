@@ -32,8 +32,8 @@ class InstagramDataProvider extends SocialDataProviderPluginBase {
    */
   public function setClient() {
     if (NULL === $this->instagram) {
-      $this->instagram = new Instagram($this->config->get('apiKey'));
-      $this->instagram->setAccessToken($this->config->get('accessToken'));
+      $this->instagram = new Instagram($this->config->get('in_client_id'));
+      $this->instagram->setAccessToken($this->config->get('in_access_token'));
     }
   }
 
@@ -47,7 +47,7 @@ class InstagramDataProvider extends SocialDataProviderPluginBase {
    *   An array of stdClass posts.
    */
   public function getPosts($numPosts) {
-    $resolution = $this->config->get('resolution');
+    $resolution = $this->config->get('in_picture_resolution');
     $posts    = [];
     $response = $this->instagram->getUserMedia('self', $numPosts);
     if (isset($response->data)) {
