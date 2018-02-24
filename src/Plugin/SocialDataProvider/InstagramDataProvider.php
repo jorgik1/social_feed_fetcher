@@ -2,7 +2,7 @@
 
 namespace Drupal\social_feed_fetcher\Plugin\SocialDataProvider;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
+use Drupal\social_feed_fetcher\SocialDataProviderPluginBase;
 use MetzWeb\Instagram\Instagram;
 
 /**
@@ -10,21 +10,7 @@ use MetzWeb\Instagram\Instagram;
  *
  * @package Drupal\socialfeed
  */
-class InstagramDataProvider {
-
-  /**
-   * Instagram application api key.
-   *
-   * @var string
-   */
-  protected $apiKey;
-
-  /**
-   * Instagram application access token.
-   *
-   * @var string
-   */
-  protected $accessToken;
+class InstagramDataProvider extends SocialDataProviderPluginBase {
 
   /**
    * Instagram client.
@@ -33,19 +19,6 @@ class InstagramDataProvider {
    */
   protected $instagram;
 
-  /**
-   * InstagramPostCollector constructor.
-   *
-   * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
-   *   Config factory.
-   * @param \MetzWeb\Instagram\Instagram|null $instagram
-   *   Instagram client.
-   */
-  public function __construct(ConfigFactoryInterface $configFactory) {
-    $config            = $configFactory->get('socialfeed.instagramsettings');
-    $this->apiKey      = $config->get('client_id');
-    $this->accessToken = $config->get('access_token');
-  }
 
   /**
    * Set the Instagram client.
@@ -54,8 +27,8 @@ class InstagramDataProvider {
    */
   public function setClient() {
     if (NULL === $this->instagram) {
-      $this->instagram = new Instagram($this->apiKey);
-      $this->instagram->setAccessToken($this->accessToken);
+      $this->instagram = new Instagram($this->config->get('apiKey'));
+      $this->instagram->setAccessToken($this->config->get('accessToken'));
     }
   }
 
@@ -64,13 +37,12 @@ class InstagramDataProvider {
    *
    * @param int $numPosts
    *   Number of posts to get.
-   * @param string $resolution
-   *   The resolution to get.
    *
    * @return array
    *   An array of stdClass posts.
    */
-  public function getPosts($numPosts, $resolution) {
+  public function getPosts($numPosts) {
+    $resolution = $this->config->get('resolution');
     $posts    = [];
     $response = $this->instagram->getUserMedia('self', $numPosts);
     if (isset($response->data)) {

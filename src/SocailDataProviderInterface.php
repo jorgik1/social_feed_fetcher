@@ -18,12 +18,19 @@ interface SocailDataProviderInterface extends PluginInspectionInterface {
 
   /**
    * Setting social network client.
+   *
+   * @return object
    */
   public function setClient();
 
   /**
    * Getting posts from social network.
+   *
+   * @param integer $count
+   *   Posts count parameter.
+   *
+   * @return array
    */
-  public function getPosts();
+  public function getPosts($count);
 
 }
