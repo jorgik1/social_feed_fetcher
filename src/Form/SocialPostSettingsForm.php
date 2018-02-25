@@ -111,11 +111,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#description' => $this->t('eg. If your Facebook page URL is this http://www.facebook.com/YOUR_PAGE_NAME, <br />then you just need to add this YOUR_PAGE_NAME above.'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
-        ],
-      ],      '#states'        => [
+      '#required' => $config->get('facebook_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="facebook_enabled"]' => ['checked' => TRUE],
         ]
@@ -128,11 +125,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('fb_app_id'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
-        ],
-      ],       '#states'        => [
+      '#required' => $config->get('facebook_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="facebook_enabled"]' => ['checked' => TRUE],
         ]
@@ -145,11 +139,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('fb_secret_key'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
-        ],
-      ],       '#states'        => [
+      '#required' => $config->get('facebook_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="facebook_enabled"]' => ['checked' => TRUE],
         ]
@@ -190,11 +181,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('tw_consumer_key'),
       '#size'          => 60,
       '#maxlength'     => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
-        ],
-      ],
+      '#required' => $config->get('twitter_enabled') ? TRUE : FALSE,
       '#states'        => [
         'visible'  => [
           ':input[name="twitter_enabled"]' => ['checked' => TRUE],
@@ -207,11 +194,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('tw_consumer_secret'),
       '#size'          => 60,
       '#maxlength'     => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
-        ],
-      ],       '#states'        => [
+      '#required' => $config->get('twitter_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="twitter_enabled"]' => ['checked' => TRUE],
         ]
@@ -223,11 +207,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('tw_access_token'),
       '#size'          => 60,
       '#maxlength'     => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
-        ],
-      ],       '#states'        => [
+      '#required' => $config->get('twitter_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="twitter_enabled"]' => ['checked' => TRUE],
         ]
@@ -239,11 +220,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('tw_access_token_secret'),
       '#size'          => 60,
       '#maxlength'     => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
-        ],
-      ],       '#states'        => [
+      '#required' => $config->get('twitter_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="twitter_enabled"]' => ['checked' => TRUE],
         ]
@@ -287,11 +265,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('in_client_id'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
-        ],
-      ],      '#states'        => [
+      '#required' => $config->get('instagram_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="instagram_enabled"]' => ['checked' => TRUE],
         ]
@@ -304,11 +279,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('in_redirect_uri'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
-          ],
-        ],
+      '#required' => $config->get('instagram_enabled') ? TRUE : FALSE,
       '#states'        => [
         'visible'  => [
           ':input[name="instagram_enabled"]' => ['checked' => TRUE],
@@ -336,11 +307,8 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('in_access_token'),
       '#size' => 60,
       '#maxlength' => 100,
-      '#required' => [
-        'visible'  => [
-          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
-        ],
-      ],      '#states'        => [
+      '#required' => $config->get('instagram_enabled') ? TRUE : FALSE,
+      '#states'        => [
         'visible'  => [
           ':input[name="instagram_enabled"]' => ['checked' => TRUE],
         ]
