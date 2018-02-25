@@ -112,6 +112,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
     $form['facebook']['fb_app_id'] = [
@@ -121,6 +126,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
     $form['facebook']['fb_secret_key'] = [
@@ -130,6 +140,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
     $form['facebook']['fb_no_feeds'] = [
@@ -140,6 +155,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#maxlength' => 60,
       '#max' => 100,
       '#min' => 1,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
 
@@ -162,6 +182,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['twitter']['tw_consumer_secret'] = [
       '#type'          => 'textfield',
@@ -170,6 +195,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['twitter']['tw_access_token'] = [
       '#type'          => 'textfield',
@@ -178,6 +208,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['twitter']['tw_access_token_secret'] = [
       '#type'          => 'textfield',
@@ -186,6 +221,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#required'      => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['twitter']['tw_count'] = [
       '#type'          => 'number',
@@ -194,6 +234,12 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#min'           => 1,
+      '#max' => 100,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="twitter_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
     $form['instagram'] = [
@@ -220,6 +266,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['instagram']['in_redirect_uri'] = [
       '#type' => 'textfield',
@@ -229,6 +280,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['instagram']['in_auth_link'] = [
       '#type' => 'item',
@@ -239,6 +295,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
         '@this' => Url::fromUri('http://jelled.com/instagram/access-token')
           ->toString(),
       ]),
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['instagram']['in_access_token'] = [
       '#type' => 'textfield',
@@ -247,6 +308,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#required' => TRUE,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['instagram']['in_picture_count'] = [
       '#type' => 'number',
@@ -255,6 +321,12 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#min' => 1,
+      '#max' => 100,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     if ($config->get('in_access_token')) {
       $form['instagram']['feed'] = [
@@ -277,11 +349,21 @@ class SocialPostSettingsForm extends ConfigFormBase {
         'low_resolution' => $this->t('Low Resolution'),
         'standard_resolution' => $this->t('Standard Resolution'),
       ],
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
     $form['instagram']['in_post_link'] = [
       '#type' => 'checkbox',
       '#title' => $this->t('Show post URL'),
       '#default_value' => $config->get('in_post_link'),
+      '#states'        => [
+        'visible'  => [
+          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
     ];
 
     if ($this->currentUser->hasPermission('administer site configuration')) {
