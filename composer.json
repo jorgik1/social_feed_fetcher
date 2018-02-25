@@ -20,7 +20,7 @@
     "facebook/graph-sdk": "^5.4.3",
     "cosenary/instagram": "v2.3",
     "nesbot/carbon": "1.9.*"
-  }
+  },
   "minimum-stability": "dev",
   "prefer-stable": true
 }
