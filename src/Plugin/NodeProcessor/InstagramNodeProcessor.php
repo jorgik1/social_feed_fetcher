@@ -58,28 +58,4 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
     return FALSE;
   }
 
-  /**
-   * Setter for entityStorage
-   *
-   * @param $enitytStorage
-   *
-   * @return $this
-   */
-  public function setStorage($enitytStorage){
-    $this->entityStorage = $enitytStorage;
-    return $this;
-  }
-
-  /**
-   * Setter for Config.
-   *
-   * @param $config
-   *
-   * @return $this
-   */
-  public function setConfig($config){
-    $this->config = $config;
-    return $this;
-  }
-
 }

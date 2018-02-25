@@ -79,4 +79,28 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
     $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
     return $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
   }
+
+  /**
+   * Setter for entityStorage
+   *
+   * @param $enitytStorage
+   *
+   * @return $this
+   */
+  public function setStorage($enitytStorage){
+    $this->entityStorage = $enitytStorage;
+    return $this;
+  }
+
+  /**
+   * Setter for Config.
+   *
+   * @param $config
+   *
+   * @return $this
+   */
+  public function setConfig($config){
+    $this->config = $config;
+    return $this;
+  }
 }

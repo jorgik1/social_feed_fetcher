@@ -49,7 +49,7 @@ function social_feed_fetcher_cron() {
         drupal_set_message($facebook->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $facebook_count += $facebook_processor->processItem($facebook->getPluginId(), $item);
+        $facebook_count += $facebook_processor->processItem($facebook->getId(), $item);
       }
     }
     // Get twitter posts, if enabled.
@@ -67,7 +67,7 @@ function social_feed_fetcher_cron() {
         drupal_set_message($twitter->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $twitter_count += $twitter_processor->processItem($twitter->getPluginId(), $item);
+        $twitter_count += $twitter_processor->processItem($twitter->getId(), $item);
       }
     }
     // Get instagram posts, if enabled.
@@ -85,7 +85,7 @@ function social_feed_fetcher_cron() {
         drupal_set_message($instagram->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $instagram_count += $instagram_processor->processItem($instagram->getPluginId(), $item);
+        $instagram_count += $instagram_processor->processItem($instagram->getId(), $item);
       }
     }
 
