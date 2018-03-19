@@ -1,0 +1,22 @@
+{#
+/**
+ * @file social_post.html.twig
+ * Default theme implementation to present Social post data.
+ *
+ * This template is used when viewing Social post pages.
+ *
+ *
+ * Available variables:
+ * - content: A list of content items. Use 'content' to print all content, or
+ * - attributes: HTML attributes for the container element.
+ *
+ * @see template_preprocess_social_post()
+ *
+ * @ingroup themeable
+ */
+#}
+<div{{ attributes.addClass('social_post') }}>
+  {% if content %}
+    {{- content -}}
+  {% endif %}
+</div>

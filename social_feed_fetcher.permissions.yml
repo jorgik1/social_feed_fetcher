@@ -1,2 +1,21 @@
 'administer socialpost entity':
   title: Administer Social Feed settings
+add social post entities:
+  title: 'Create new Social post entities'
+
+administer social post entities:
+  title: 'Administer Social post entities'
+  description: 'Allow to access the administration form to configure Social post entities.'
+  restrict access: true
+
+delete social post entities:
+  title: 'Delete Social post entities'
+
+edit social post entities:
+  title: 'Edit Social post entities'
+
+view published social post entities:
+  title: 'View published Social post entities'
+
+view unpublished social post entities:
+  title: 'View unpublished Social post entities'

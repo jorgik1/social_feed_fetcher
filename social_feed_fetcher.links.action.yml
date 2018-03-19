@@ -1,0 +1,11 @@
+entity.social_post.add_form:
+  route_name: entity.social_post.add_page
+  title: 'Add Social post'
+  appears_on:
+    - entity.social_post.collection
+entity.social_post_type.add_form:
+  route_name: entity.social_post_type.add_form
+  title: 'Add Social post type'
+  appears_on:
+    - entity.social_post_type.collection
+

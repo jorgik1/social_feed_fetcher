@@ -3,3 +3,21 @@ social_feed_fetcher.settings:
   description: 'Configure Social Feed'
   route_name:  social_feed_fetcher.settings
   parent: system.admin_config_services
+
+# Social post menu items definition
+entity.social_post.collection:
+  title: 'Social post list'
+  route_name: entity.social_post.collection
+  description: 'List Social post entities'
+  parent: system.admin_structure
+  weight: 100
+
+
+# Social post type menu items definition
+entity.social_post_type.collection:
+  title: 'Social post type'
+  route_name: entity.social_post_type.collection
+  description: 'List Social post type (bundles)'
+  parent: system.admin_structure
+  weight: 99
+

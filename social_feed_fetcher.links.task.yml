@@ -1,0 +1,18 @@
+# Social post routing definition
+
+entity.social_post.canonical:
+  route_name: entity.social_post.canonical
+  base_route: entity.social_post.canonical
+  title: 'View'
+
+entity.social_post.edit_form:
+  route_name: entity.social_post.edit_form
+  base_route: entity.social_post.canonical
+  title: 'Edit'
+
+entity.social_post.delete_form:
+  route_name:  entity.social_post.delete_form
+  base_route:  entity.social_post.canonical
+  title: Delete
+  weight: 10
+
