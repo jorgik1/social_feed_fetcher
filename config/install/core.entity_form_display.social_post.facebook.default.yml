@@ -1,0 +1,63 @@
+uuid: 919f1091-36fb-4c6e-a1dd-fcd0efd6c6e9
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.social_post.facebook.field_fb_page_name
+    - field.field.social_post.facebook.field_fb_secret_key
+    - field.field.social_post.facebook.field_sp_number
+    - field.field.social_post.facebook.field_sp_type_enable
+    - social_feed_fetcher.social_post_type.facebook
+id: social_post.facebook.default
+targetEntityType: social_post
+bundle: facebook
+mode: default
+content:
+  field_fb_page_name:
+    weight: 7
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_fb_secret_key:
+    weight: 8
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+    type: string_textfield
+    region: content
+  field_sp_number:
+    weight: 9
+    settings:
+      placeholder: ''
+    third_party_settings: {  }
+    type: number
+    region: content
+  field_sp_type_enable:
+    weight: 6
+    settings:
+      display_label: true
+    third_party_settings: {  }
+    type: boolean_checkbox
+    region: content
+  name:
+    type: string_textfield
+    weight: -4
+    region: content
+    settings:
+      size: 60
+      placeholder: ''
+    third_party_settings: {  }
+  user_id:
+    type: entity_reference_autocomplete
+    weight: 5
+    settings:
+      match_operator: CONTAINS
+      size: 60
+      placeholder: ''
+    region: content
+    third_party_settings: {  }
+hidden: {  }

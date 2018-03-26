@@ -1,0 +1,60 @@
+uuid: fe001134-1735-401f-89e6-e84401e60183
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.field.social_post.facebook.field_fb_page_name
+    - field.field.social_post.facebook.field_fb_secret_key
+    - field.field.social_post.facebook.field_sp_number
+    - field.field.social_post.facebook.field_sp_type_enable
+    - social_feed_fetcher.social_post_type.facebook
+id: social_post.facebook.default
+targetEntityType: social_post
+bundle: facebook
+mode: default
+content:
+  field_fb_page_name:
+    weight: 2
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_fb_secret_key:
+    weight: 3
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_sp_number:
+    weight: 4
+    label: above
+    settings:
+      thousand_separator: ''
+      prefix_suffix: true
+    third_party_settings: {  }
+    type: number_integer
+    region: content
+  field_sp_type_enable:
+    weight: 1
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  name:
+    label: above
+    type: string
+    weight: 0
+    region: content
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+hidden:
+  user_id: true

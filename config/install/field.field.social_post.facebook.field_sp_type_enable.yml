@@ -1,0 +1,23 @@
+uuid: 064869db-bb1a-4b68-91ee-c12d9e0f8e9f
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.social_post.field_sp_type_enable
+    - social_feed_fetcher.social_post_type.facebook
+id: social_post.facebook.field_sp_type_enable
+field_name: field_sp_type_enable
+entity_type: social_post
+bundle: facebook
+label: Enable
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

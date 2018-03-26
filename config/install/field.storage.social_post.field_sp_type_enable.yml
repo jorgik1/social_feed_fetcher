@@ -1,0 +1,18 @@
+uuid: 71528ba2-7963-4b46-b1bc-8b47d3c67709
+langcode: en
+status: true
+dependencies:
+  module:
+    - social_feed_fetcher
+id: social_post.field_sp_type_enable
+field_name: field_sp_type_enable
+entity_type: social_post
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

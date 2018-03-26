@@ -1,0 +1,19 @@
+uuid: fce014de-12b8-4c78-93c5-a99dd34f4312
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.social_post.field_fb_page_name
+    - social_feed_fetcher.social_post_type.facebook
+id: social_post.facebook.field_fb_page_name
+field_name: field_fb_page_name
+entity_type: social_post
+bundle: facebook
+label: 'Facebook Page Name'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

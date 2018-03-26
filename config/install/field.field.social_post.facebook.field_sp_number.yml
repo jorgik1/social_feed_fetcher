@@ -1,0 +1,25 @@
+uuid: 1fdc6cbf-36ce-4b2c-94b2-e0a493563880
+langcode: en
+status: true
+dependencies:
+  config:
+    - field.storage.social_post.field_sp_number
+    - social_feed_fetcher.social_post_type.facebook
+id: social_post.facebook.field_sp_number
+field_name: field_sp_number
+entity_type: social_post
+bundle: facebook
+label: 'Number of posts'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 5
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer
