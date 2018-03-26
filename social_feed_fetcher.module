@@ -34,7 +34,7 @@ function social_feed_fetcher_cron() {
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
-    if ($config->get('facebook.enabled') == TRUE) {
+    if ($config->get('facebook_enabled') === TRUE) {
 
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
       $facebook = $social_data_provider_manager->createInstance('facebook');
@@ -54,7 +54,7 @@ function social_feed_fetcher_cron() {
     }
     // Get twitter posts, if enabled.
     $twitter_count = 0;
-    if ($config->get('twitter.enabled') == TRUE) {
+    if ($config->get('twitter_enabled') === TRUE) {
 
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
       $twitter = $social_data_provider_manager->createInstance('twitter');
@@ -72,7 +72,7 @@ function social_feed_fetcher_cron() {
     }
     // Get instagram posts, if enabled.
     $instagram_count = 0;
-    if ($config->get('instagram.enabled') == TRUE) {
+    if ($config->get('instagram_enabled') === TRUE) {
 
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\InstagramDataProvider $instagram */
       $instagram = $social_data_provider_manager->createInstance('instagram');
