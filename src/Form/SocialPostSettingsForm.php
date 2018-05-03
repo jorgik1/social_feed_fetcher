@@ -153,7 +153,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('fb_no_feeds'),
       '#size' => 60,
       '#maxlength' => 60,
-      '#max' => 100,
+      '#max' => 30,
       '#min' => 1,
       '#states'        => [
         'visible'  => [
@@ -234,7 +234,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size'          => 60,
       '#maxlength'     => 100,
       '#min'           => 1,
-      '#max' => 100,
+      '#max' => 30,
       '#states'        => [
         'visible'  => [
           ':input[name="twitter_enabled"]' => ['checked' => TRUE],
@@ -321,7 +321,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#size' => 60,
       '#maxlength' => 100,
       '#min' => 1,
-      '#max' => 100,
+      '#max' => 30,
       '#states'        => [
         'visible'  => [
           ':input[name="instagram_enabled"]' => ['checked' => TRUE],

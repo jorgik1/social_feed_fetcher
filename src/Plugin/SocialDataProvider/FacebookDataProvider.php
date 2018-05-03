@@ -29,8 +29,10 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
     'link',
     'message',
     'created_time',
-    'picture',
+    'permalink_url',
+    'picture{url}',
     'type',
+    'attachments'
   ];
 
 
@@ -103,6 +105,19 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
    */
   protected function extractFacebookFeedData($post_types, array $data) {
     $posts = array_map(function ($post) {
+      $image = NULL;
+      if (!empty($post['attachments']['data'][0]['media']['image']['src'])) {
+        $image = $post['attachments']['data'][0]['media']['image']['src'];
+      }
+
+      if (!empty($post['attachments']['data'][0]['subattachments']['data'][0]['media']['image']['src'])) {
+        $image = $post['attachments']['data'][0]['subattachments']['data'][0]['media']['image']['src'];
+      }
+
+      $post += [
+        'image' => $image
+      ];
+
       return $post;
     }, $data);
 
