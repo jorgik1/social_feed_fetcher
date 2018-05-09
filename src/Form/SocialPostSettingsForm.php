@@ -38,12 +38,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
    */
   protected $state;
 
-  /**
-   * Messenger object.
-   *
-   * @var \Drupal\Core\Messenger\MessengerInterface
-   */
-  protected $messenger;
 
   /**
    * Request time value.
@@ -55,12 +49,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
   /**
    * {@inheritdoc}
    */
-  public function __construct(ConfigFactoryInterface $config_factory, AccountInterface $current_user, CronInterface $cron, StateInterface $state, MessengerInterface $messenger) {
+  public function __construct(ConfigFactoryInterface $config_factory, AccountInterface $current_user, CronInterface $cron, StateInterface $state) {
     parent::__construct($config_factory);
     $this->currentUser = $current_user;
     $this->cron = $cron;
     $this->state = $state;
-    $this->messenger = $messenger;
   }
 
   /**
@@ -71,8 +64,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       $container->get('config.factory'),
       $container->get('current_user'),
       $container->get('cron'),
-      $container->get('state'),
-      $container->get('messenger')
+      $container->get('state')
     );
   }
 
@@ -448,10 +440,10 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $this->state->set('social_feed_fetcher.next_execution', 0);
     $this->state->set('social_feed_fetcher_show_status_message', TRUE);
     if ($this->cron->run()) {
-      $this->messenger->addMessage($this->t('Cron ran successfully.'));
+      drupal_set_message($this->t('Cron ran successfully.'));
     }
     else {
-      $this->messenger->addError($this->t('Cron run failed.'));
+      drupal_set_message($this->t('Cron run failed.'), 'error');
     }
   }
 

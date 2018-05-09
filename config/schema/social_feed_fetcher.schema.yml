@@ -104,3 +104,6 @@ social_feed_fetcher.settings:
      in_post_link:
        type: boolean
        label: Show post URL
+     formats.post_format:
+       type: string
+       label: Post format

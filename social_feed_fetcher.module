@@ -46,7 +46,7 @@ function social_feed_fetcher_cron() {
       try {
         $posts = $facebook->getPosts();
       } catch (\Exception $exception) {
-        \Drupal::messenger()->addError($facebook->getPluginId() . ' ' . $exception->getMessage());
+        drupal_set_message($facebook->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
         $facebook_count += $facebook_processor->processItem($facebook->getId(), $item);
@@ -64,7 +64,7 @@ function social_feed_fetcher_cron() {
       try {
         $posts = $twitter->getPosts($config->get('tw_count'));
       } catch (\Exception $exception) {
-        \Drupal::messenger()->addError($twitter->getPluginId() . ' ' . $exception->getMessage());
+        drupal_set_message($twitter->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
         $twitter_count += $twitter_processor->processItem($twitter->getId(), $item);
@@ -82,7 +82,7 @@ function social_feed_fetcher_cron() {
       try {
         $posts = $instagram->getPosts($config->get('in_picture_count'));
       } catch (\Exception $exception) {
-        \Drupal::messenger()->addError($instagram->getPluginId() . ' ' . $exception->getMessage());
+        drupal_set_message($instagram->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
         $instagram_count += $instagram_processor->processItem($instagram->getId(), $item);
@@ -97,7 +97,7 @@ function social_feed_fetcher_cron() {
       ]);
 
     if (\Drupal::state()->get('social_feed_fetcher_show_status_message')) {
-      \Drupal::messenger()->addMessage(t('The Social Feed Fetcher cron executed at %time', ['%time' => date_iso8601($request_time)]));
+      drupal_set_message(t('The Social Feed Fetcher cron executed at %time', ['%time' => date_iso8601($request_time)]));
       \Drupal::state()->set('social_feed_fetcher_show_status_message', FALSE);
     }
 
