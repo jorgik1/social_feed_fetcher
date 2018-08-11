@@ -33,7 +33,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
           'value' => social_feed_fetcher_linkify(html_entity_decode($data_item['message'])),
           'format' => $this->config->get('formats.post_format'),
         ],
-        'field_link' => [
+        'field_social_feed_link' => [
           'uri' => $data_item['link'],
           'title' => '',
           'options' => [],

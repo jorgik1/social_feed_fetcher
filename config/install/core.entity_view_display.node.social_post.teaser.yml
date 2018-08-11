@@ -4,7 +4,7 @@ dependencies:
   config:
     - core.entity_view_mode.node.teaser
     - field.field.node.social_post.field_sp_image
-    - field.field.node.social_post.field_link
+    - field.field.node.social_post.field_social_feed_link
     - field.field.node.social_post.field_platform
     - field.field.node.social_post.field_post
     - field.field.node.social_post.field_posted
@@ -20,7 +20,7 @@ content:
     weight: 100
 hidden:
   field_sp_image: true
-  field_link: true
+  field_social_feed_link: true
   field_platform: true
   field_post: true
   field_posted: true

@@ -4,7 +4,7 @@ dependencies:
   config:
     - field.field.node.social_post.field_id
     - field.field.node.social_post.field_sp_image
-    - field.field.node.social_post.field_link
+    - field.field.node.social_post.field_social_feed_link
     - field.field.node.social_post.field_platform
     - field.field.node.social_post.field_post
     - field.field.node.social_post.field_posted
@@ -39,7 +39,7 @@ content:
     type: image_image
     weight: 26
     region: content
-  field_link:
+  field_social_feed_link:
     weight: 4
     settings:
       placeholder_url: ''
