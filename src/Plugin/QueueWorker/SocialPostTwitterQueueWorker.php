@@ -14,17 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  *  cron = {"time" = 10},
  * )
  */
-class SocialPostTwitterQueueWorker extends QueueWorkerBase implements ContainerFactoryPluginInterface {
-
-  /**
-   * @var \Drupal\social_feed_fetcher\PluginNodeProcessorManager
-   */
-  public $nodeProcessor;
-
-  public function __construct(array $configuration, $plugin_id, $plugin_definition, PluginNodeProcessorManager $nodeProcessor) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-    $this->nodeProcessor = $nodeProcessor;
-  }
+class SocialPostTwitterQueueWorker extends SocialPostQueueWorkerBase {
 
   /**
    * {@inheritdoc}
@@ -34,13 +24,4 @@ class SocialPostTwitterQueueWorker extends QueueWorkerBase implements ContainerF
     $twitter_node_processor = $this->nodeProcessor->createInstance('twitter_processor');
     $twitter_node_processor->processItem('twitter', $data);
   }
-
-  public static function create(ContainerInterface $container, array $configuration, $plugin_id, $plugin_definition) {
-    return new static(
-      $configuration,
-      $plugin_id,
-      $plugin_definition,
-      $container->get('plugin.manager.node_processor'));
-  }
-
 }

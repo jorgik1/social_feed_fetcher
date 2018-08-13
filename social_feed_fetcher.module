@@ -5,6 +5,9 @@
  * Social Feed Fetcher Module.
  */
 
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
+
 /**
  * Cron job to pull social feeds, as configured by module settings.
  *
@@ -32,9 +35,13 @@ function social_feed_fetcher_cron() {
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
+    /** @var QueueFactory $queue_factory */
+    $queue_factory = \Drupal::service('queue');
+
     if ($config->get('facebook_enabled') === TRUE) {
-      /** @var \Drupal\Core\Queue\QueueWorkerInterface $facebook_queue */
-      $facebook_queue = \Drupal::queue('social_posts_facebook_queue_worker');
+
+      /** @var \Drupal\Core\Queue\QueueInterface $facebook_queue */
+      $facebook_queue = $queue_factory->get('social_posts_facebook_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
       $facebook = $social_data_provider_manager->createInstance('facebook');
       $facebook->setClient();
@@ -47,7 +54,7 @@ function social_feed_fetcher_cron() {
         return;
       }
       foreach ($posts as $item) {
-        $facebook_queue->processItem($item);
+        $facebook_queue->createItem($item);
         $facebook_count++;
       }
     }
@@ -55,8 +62,8 @@ function social_feed_fetcher_cron() {
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter_enabled') === TRUE) {
-      /** @var \Drupal\Core\Queue\QueueWorkerInterface $twitter_queue */
-      $twitter_queue = \Drupal::queue('social_posts_twitter_queue_worker');
+      /** @var \Drupal\Core\Queue\QueueInterface $twitter_queue */
+      $twitter_queue = $queue_factory->get('social_posts_twitter_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
       $twitter = $social_data_provider_manager->createInstance('twitter');
       $twitter->setClient();
@@ -66,15 +73,15 @@ function social_feed_fetcher_cron() {
         drupal_set_message($twitter->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $twitter_queue->processItem($item);
+        $twitter_queue->createItem($item);
         $twitter_count++;
       }
     }
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram_enabled') === TRUE) {
-      /** @var \Drupal\Core\Queue\QueueWorkerInterface $instagram_queue */
-      $instagram_queue = \Drupal::queue('social_posts_instagram_queue_worker');
+      /** @var \Drupal\Core\Queue\QueueInterface $instagram_queue */
+      $instagram_queue = $queue_factory->get('social_posts_instagram_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\InstagramDataProvider $instagram */
       $instagram = $social_data_provider_manager->createInstance('instagram');
       $instagram->setClient();
@@ -84,7 +91,7 @@ function social_feed_fetcher_cron() {
         drupal_set_message($instagram->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $instagram_queue->processItem($item);
+        $instagram_queue->createItem($item);
         $instagram_count++;
       }
     }
