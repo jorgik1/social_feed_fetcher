@@ -39,7 +39,7 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
         'field_id' => $data_item['raw']->id,
         'field_post' => [
           'value' => social_feed_fetcher_linkify(html_entity_decode($data_item['raw']->caption->text)),
-          'format' => $this->config->get('formats.post_format'),
+          'format' => $this->config->get('formats_post_format'),
         ],
         'field_link' => [
           'uri' => $data_item['raw']->link,

@@ -20,7 +20,7 @@ function social_feed_fetcher_cron() {
   $config = \Drupal::configFactory()
     ->getEditable('social_feed_fetcher.settings');
 
-  $interval = $config->get('cron.interval');
+  $interval = $config->get('social_feed_fetcher_interval');
 
   $request_time = \Drupal::time()->getRequestTime();
 
@@ -45,10 +45,10 @@ function social_feed_fetcher_cron() {
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
       $facebook = $social_data_provider_manager->createInstance('facebook');
       $facebook->setClient();
-
+      $posts_count_num = $config->get('fb_no_feeds');
       // Get all recent posts facebook.
       try {
-        $posts = $facebook->getPosts();
+        $posts = $facebook->getPosts($posts_count_num);
       } catch (\Exception $exception) {
         drupal_set_message($facebook->getPluginId() . ' ' . $exception->getMessage(), 'error');
         return;
