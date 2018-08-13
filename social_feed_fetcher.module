@@ -5,6 +5,9 @@
  * Social Feed Fetcher Module.
  */
 
+use Drupal\Core\Queue\QueueFactory;
+use Drupal\Core\Queue\QueueInterface;
+
 /**
  * Cron job to pull social feeds, as configured by module settings.
  *
@@ -17,7 +20,7 @@ function social_feed_fetcher_cron() {
   $config = \Drupal::configFactory()
     ->getEditable('social_feed_fetcher.settings');
 
-  $interval = $config->get('cron.interval');
+  $interval = $config->get('social_feed_fetcher_interval');
 
   $request_time = \Drupal::time()->getRequestTime();
 
@@ -27,39 +30,42 @@ function social_feed_fetcher_cron() {
 
   if ($request_time >= $next_execution) {
 
-    /** @var \Drupal\social_feed_fetcher\PluginNodeProcessorManager $node_processor_manager */
-    $node_processor_manager = \Drupal::service('plugin.manager.node_processor');
     /** @var \Drupal\social_feed_fetcher\SocialDataProviderManager $social_data_provider_manager */
     $social_data_provider_manager = \Drupal::service('plugin.social_data_provider.manager');
 
     // Get facebook posts, if enabled.
     $facebook_count = 0;
+    /** @var QueueFactory $queue_factory */
+    $queue_factory = \Drupal::service('queue');
+
     if ($config->get('facebook_enabled') === TRUE) {
 
+      /** @var \Drupal\Core\Queue\QueueInterface $facebook_queue */
+      $facebook_queue = $queue_factory->get('social_posts_facebook_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
       $facebook = $social_data_provider_manager->createInstance('facebook');
       $facebook->setClient();
-      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\FacebookNodeProcessor $facebook_processor */
-      $facebook_processor = $node_processor_manager->createInstance('facebook_processor');
-
+      $posts_count_num = $config->get('fb_no_feeds');
       // Get all recent posts facebook.
       try {
-        $posts = $facebook->getPosts();
+        $posts = $facebook->getPosts($posts_count_num);
       } catch (\Exception $exception) {
         drupal_set_message($facebook->getPluginId() . ' ' . $exception->getMessage(), 'error');
+        return;
       }
       foreach ($posts as $item) {
-        $facebook_count += $facebook_processor->processItem($facebook->getId(), $item);
+        $facebook_queue->createItem($item);
+        $facebook_count++;
       }
     }
+
     // Get twitter posts, if enabled.
     $twitter_count = 0;
     if ($config->get('twitter_enabled') === TRUE) {
-
+      /** @var \Drupal\Core\Queue\QueueInterface $twitter_queue */
+      $twitter_queue = $queue_factory->get('social_posts_twitter_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
       $twitter = $social_data_provider_manager->createInstance('twitter');
-      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\TwitterNodeProcessor $twitter_processor */
-      $twitter_processor = $node_processor_manager->createInstance('twitter_processor');
       $twitter->setClient();
       try {
         $posts = $twitter->getPosts($config->get('tw_count'));
@@ -67,17 +73,17 @@ function social_feed_fetcher_cron() {
         drupal_set_message($twitter->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $twitter_count += $twitter_processor->processItem($twitter->getId(), $item);
+        $twitter_queue->createItem($item);
+        $twitter_count++;
       }
     }
     // Get instagram posts, if enabled.
     $instagram_count = 0;
     if ($config->get('instagram_enabled') === TRUE) {
-
+      /** @var \Drupal\Core\Queue\QueueInterface $instagram_queue */
+      $instagram_queue = $queue_factory->get('social_posts_instagram_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\InstagramDataProvider $instagram */
       $instagram = $social_data_provider_manager->createInstance('instagram');
-      /** @var \Drupal\social_feed_fetcher\Plugin\NodeProcessor\InstagramNodeProcessor $instagram_processor */
-      $instagram_processor = $node_processor_manager->createInstance('instagram_processor');
       $instagram->setClient();
       try {
         $posts = $instagram->getPosts($config->get('in_picture_count'));
@@ -85,7 +91,8 @@ function social_feed_fetcher_cron() {
         drupal_set_message($instagram->getPluginId() . ' ' . $exception->getMessage(), 'error');
       }
       foreach ($posts as $item) {
-        $instagram_count += $instagram_processor->processItem($instagram->getId(), $item);
+        $instagram_queue->createItem($item);
+        $instagram_count++;
       }
     }
 

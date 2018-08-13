@@ -391,7 +391,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#type' => 'select',
       '#title' => $this->t('Cron interval'),
       '#description' => $this->t('Time after which cron will respond to a processing request.'),
-      '#default_value' => $config->get('cron.interval'),
+      '#default_value' => $config->get('social_feed_fetcher_interval'),
       '#options' => [
         60 => $this->t('1 minute'),
         300 => $this->t('5 minutes'),
@@ -418,7 +418,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $form['formats']['formats_post_format'] = [
       '#type' => 'select',
       '#title' => $this->t('Post format'),
-      '#default_value' => $config->get('formats.post_format'),
+      '#default_value' => $config->get('formats_post_format'),
       '#options' => $allowed_formats,
     ];
 
