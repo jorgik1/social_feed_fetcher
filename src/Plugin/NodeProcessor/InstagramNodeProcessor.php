@@ -47,7 +47,7 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item['media_url'],'public://instagram/'),
+          'target_id' => social_feed_fetcher_save_file($data_item['media_url'],'public://instagram'),
         ],
         'field_posted' => [
           'value' => $string

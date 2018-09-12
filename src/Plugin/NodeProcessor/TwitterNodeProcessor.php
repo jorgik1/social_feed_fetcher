@@ -39,7 +39,7 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item->entities->media[0]->media_url_https, 'public://twitter/'),
+          'target_id' => social_feed_fetcher_save_file($data_item->entities->media[0]->media_url_https, 'public://twitter'),
         ],
         'field_posted' => $this->setPostTime($data_item->created_at),
       ]);
