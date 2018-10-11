@@ -26,6 +26,20 @@ class TwitterDataProvider extends SocialDataProviderPluginBase {
   protected $twitter;
 
   /**
+   * The timeline to use.
+   *
+   * @var string
+   */
+  protected $timelines;
+
+  /**
+   * The name of user page to import.
+   *
+   * @var string
+   */
+  protected $screenName;
+
+  /**
    * Retrieve Tweets from the given accounts home page.
    *
    * @param int $count
@@ -35,7 +49,15 @@ class TwitterDataProvider extends SocialDataProviderPluginBase {
    *   An array of posts.
    */
   public function getPosts($count) {
-    return $this->twitter->get('statuses/home_timeline', ['count' => $count]);
+    $config = [
+      'count' => $count
+    ];
+
+    if ($this->screenName) {
+      $config['screen_name'] = $this->screenName;
+    }
+
+    return $this->twitter->get($this->timelines, $config);
   }
 
   /**
@@ -51,4 +73,24 @@ class TwitterDataProvider extends SocialDataProviderPluginBase {
       );
     }
   }
+
+  /**
+   * @param $timeline
+   * @param $name
+   */
+  public function setTimelines($timeline, $name) {
+    switch ($timeline) {
+      case 'mention':
+        $this->timelines = "statuses/mentions_timeline";
+        break;
+      case 'user':
+        $this->screenName = $name;
+        $this->timelines = "statuses/user_timeline";
+        break;
+      default:
+        $this->timelines = "statuses/home_timeline";
+    }
+
+  }
+
 }

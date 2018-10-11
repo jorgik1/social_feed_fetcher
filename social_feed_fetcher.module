@@ -66,6 +66,7 @@ function social_feed_fetcher_cron() {
       $twitter_queue = $queue_factory->get('social_posts_twitter_queue_worker');
       /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
       $twitter = $social_data_provider_manager->createInstance('twitter');
+      $twitter->setTimelines($config->get('timeline'), $config->get('screen_name'));
       $twitter->setClient();
       try {
         $posts = $twitter->getPosts($config->get('tw_count'));
