@@ -5,7 +5,7 @@ namespace Drupal\social_feed_fetcher;
 use Drupal\Component\Plugin\Factory\DefaultFactory;
 use Drupal\Core\Cache\CacheBackendInterface;
 use Drupal\Core\Config\ConfigFactoryInterface;
-use Drupal\Core\Entity\EntityTypeManager;
+use Drupal\Core\Entity\EntityTypeManagerInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\social_feed_fetcher\Annotation\PluginNodeProcessor;
@@ -28,7 +28,7 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
   /**
    * {@inheritdoc}
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler,  ConfigFactoryInterface $configFactory, EntityTypeManager $entityTypeManager) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler,  ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entityTypeManager) {
     parent::__construct(
       'Plugin/NodeProcessor',
       $namespaces,

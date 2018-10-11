@@ -8,7 +8,6 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\social_feed_fetcher\Annotation\SocialDataProvider;
-use Drupal\social_feed_fetcher\SocailDataProviderInterface;
 
 
 /**
@@ -30,7 +29,7 @@ class SocialDataProviderManager extends DefaultPluginManager {
       'Plugin/SocialDataProvider',
       $namespaces,
       $module_handler,
-      SocailDataProviderInterface::class,
+      SocialDataProviderInterface::class,
       SocialDataProvider::class
     );
     # hook_node_processor_info_alter();

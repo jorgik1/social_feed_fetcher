@@ -4,7 +4,7 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
-interface SocailDataProviderInterface extends PluginInspectionInterface {
+interface SocialDataProviderInterface extends PluginInspectionInterface {
 
   /**
    * Getting ID.

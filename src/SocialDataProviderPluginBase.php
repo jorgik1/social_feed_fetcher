@@ -5,7 +5,7 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Core\Plugin\PluginBase;
 
-abstract class SocialDataProviderPluginBase extends PluginBase implements SocailDataProviderInterface {
+abstract class SocialDataProviderPluginBase extends PluginBase implements SocialDataProviderInterface {
 
   /**
    * @var \Drupal\Core\Config\Config
