@@ -57,6 +57,8 @@ class TwitterDataProvider extends SocialDataProviderPluginBase {
       $config['screen_name'] = $this->screenName;
     }
 
+    $config['tweet_mode'] = 'extended';
+
     return $this->twitter->get($this->timelines, $config);
   }
 

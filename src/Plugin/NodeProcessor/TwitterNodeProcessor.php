@@ -30,11 +30,11 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
         'field_platform' => ucwords($source),
         'field_id' => $data_item->id,
         'field_post' => [
-          'value' => social_feed_fetcher_linkify(html_entity_decode($data_item->text)),
+          'value' => social_feed_fetcher_linkify(html_entity_decode($data_item->full_text)),
           'format' => $this->config->get('formats_post_format'),
         ],
         'field_social_feed_link' => [
-          'uri' => $data_item->entities->urls[0]->url,
+          'uri' => $data_item->entities->media[0]->url,
           'title' => '',
           'options' => [],
         ],
