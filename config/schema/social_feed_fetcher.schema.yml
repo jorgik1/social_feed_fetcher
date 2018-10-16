@@ -11,6 +11,9 @@ social_feed_fetcher.settings:
      instagram_enabled:
        type: boolean
        label: Instagram service enable
+     linkedin_enabled:
+       type: boolean
+       label: Linkedin service enable
      fb_page_name:
        type: string
        label: Facebook Page Name
@@ -86,6 +89,15 @@ social_feed_fetcher.settings:
      in_client_id:
        type: string
        label: client_id
+     linkedin_client_id:
+       type: string
+       label: Linkedin client id
+     linkedin_secret_app:
+       type: string
+       label: Linkedin secret app
+     linkedin_posts_count:
+       type: integer
+       label: Linkedin count
      in_redirect_uri:
        type: string
        label: Redirect URI

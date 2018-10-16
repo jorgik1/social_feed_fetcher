@@ -97,11 +97,40 @@ function social_feed_fetcher_cron() {
       }
     }
 
+    $linkedin_count = 0;
+    if ($config->get('linkedin_enabled') === TRUE) {
+      $linkedin_posts = [];
+      /** @var \Drupal\Core\Queue\QueueInterface $linkedin_queue */
+      $linkedin_queue = $queue_factory->get('social_posts_linkedin_queue_worker');
+      /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\LinkedinDataProvider $linkedin */
+      $linkedin = $social_data_provider_manager->createInstance('linkedin');
+      $linkedin->setFeed($config->get('linkedin_feed_type'));
+      if ($config->get('linkedin_feed_type') == 'companies'){
+        $linkedin->setCompaniesId($config->get('linkedin_companies_id'));
+      }
+      $linkedin->setClient();
+      try {
+        $linkedin_posts = $linkedin->getPosts($config->get('linkedin_posts_count'));
+      } catch (\Exception $exception) {
+        drupal_set_message($linkedin->getPluginId() . ' ' . $exception->getMessage(), 'error');
+      }
+      if ($linkedin_posts) {
+        foreach ($linkedin_posts['values'] as $item) {
+          if (!is_array($item)) {
+            continue;
+          }
+          $linkedin_queue->createItem($item);
+          $linkedin_count++;
+        }
+      }
+    }
+
     \Drupal::logger('social_feed_fetcher')
-      ->info('Social Feed Fetcher ran. Facebook @facebook. Twitter @twitter. Instagram @instagram.', [
+      ->info('Social Feed Fetcher ran. Facebook @facebook. Twitter @twitter. Instagram @instagram. Linkedin @linkedin', [
         '@facebook' => $config->get('facebook_enabled') ? ' enabled, ' . $facebook_count . ' new posts' : ' disabled',
         '@twitter' => $config->get('twitter_enabled') ? ' enabled, ' . $twitter_count . ' new posts' : ' disabled',
         '@instagram' => $config->get('instagram_enabled') ? ' enabled, ' . $instagram_count . ' new posts' : ' disabled',
+        '@linkedin' => $config->get('linkedin_enabled') ? ' enabled, ' . $linkedin_count . ' new posts' : ' disabled'
       ]);
 
     if (\Drupal::state()->get('social_feed_fetcher_show_status_message')) {

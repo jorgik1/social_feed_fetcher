@@ -401,6 +401,134 @@ class SocialPostSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['linkedin'] = [
+      '#type' => 'details',
+      '#title' => $this->t('Linkedin settings'),
+      '#open' => TRUE,
+    ];
+
+    $form['linkedin']['linkedin_enabled'] = [
+      '#type'          => 'checkbox',
+      '#title'         => $this->t('Enable'),
+      '#default_value' => $config->get('linkedin_enabled'),
+    ];
+    $form['linkedin']['linkedin_feed_type'] = [
+      '#type'          => 'radios',
+      '#title' => $this->t('Feed type'),
+      '#default_value' => $config->get('linkedin_feed_type'),
+      '#options' => ['companies' => 'Company feed', 'people' => 'People feed'],
+      '#states'        => [
+        'visible'  => [
+          ':input[name="linkedin_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
+    ];
+    $form['linkedin']['linkedin_companies_id'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Linkedin company ID'),
+      '#default_value' => $config->get('linkedin_companies_id'),
+      '#description'   => $this->t("This field is usefull if you want to
+       get post from 'company' instead of 'people'."),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#states'        => [
+        'visible' => [
+          ':input[name="linkedin_feed_type"]' => ['value' => 'companies'],
+        ],
+      ],
+    ];
+    $form['linkedin']['linkedin_client_id'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Client ID'),
+      '#description'   => $this->t('Client ID from linkedin account'),
+      '#default_value' => $config->get('linkedin_client_id'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#required'      => $config->get('linkedin_enabled') ? TRUE : FALSE,
+      '#states'        => [
+        'visible' => [
+          ':input[name="linkedin_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    $form['linkedin']['linkedin_secret_app'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Secret app'),
+      '#description'   => $this->t('Secret app'),
+      '#default_value' => $config->get('linkedin_secret_app'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#required'      => $config->get('linkedin_enabled') ? TRUE : FALSE,
+      '#states'        => [
+        'visible' => [
+          ':input[name="linkedin_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    $form['linkedin']['linkedin_posts_count'] = [
+      '#type'          => 'number',
+      '#title'         => $this->t('Linkedin Count'),
+      '#default_value' => $config->get('linkedin_posts_count'),
+      '#size'          => 60,
+      '#maxlength'     => 100,
+      '#min'           => 1,
+      '#max' => 30,
+      '#states'        => [
+        'visible'  => [
+          ':input[name="linkedin_enabled"]' => ['checked' => TRUE],
+        ]
+      ]
+    ];
+    $form['linkedin']['feed'] = [
+      '#type'   => 'item',
+      '#title'  => $this->t('Feed URL'),
+      '#markup' => $this->t('Your url redirect is : @url_redirect',
+        [
+          '@url_redirect'  => \Drupal::request()->getHost() . '/oauth/callback',
+        ]
+      ),
+      '#states' => [
+        'visible'  => [
+          ':input[name="linkedin_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+    if ($config->get('linkedin_client_id') && $config->get('linkedin_secret_app')) {
+      $url = Url::fromUri(
+        'https://www.linkedin.com/oauth/v2/authorization',
+        [
+          'query' => [
+            'response_type' => 'code',
+            'client_id' => $config->get('linkedin_client_id'),
+            'redirect_uri' => 'https://' . \Drupal::request()->getHost() . '/oauth/callback',
+          ]
+        ]
+      );
+      $form['linkedin']['url_connector'] = [
+        '#type'   => 'item',
+        '#title'  => $this->t('URL connector'),
+        '#description' => $this->t('You need to click on this link to update the access token. this one expire all the 60 days.'),
+        '#markup' => $this->t('Your url redirect is : <a href="@url_connector" target="@blank">here</a>',
+          [
+            '@url_connector'  => $url->toString(),
+            '@blank' => '_blank',
+          ]
+        ),
+      ];
+      $access = $this->state->getMultiple(['access_token', 'expires_in', 'expires_in_save']);
+      $time = time();
+      $message = $this->t("You're disconnect to Linkedin API. You need to refresh the token");
+      if (($access['expires_in_save'] + $access['expires_in']) > $time) {
+        $message = $this->t("You're connected to Linkedin API.");
+      }
+      $form['linkedin']['connect_api'] = [
+        '#type'   => 'item',
+        '#title'  => $this->t('State API connection'),
+        '#markup' => $message,
+      ];
+    }
+
+
     if ($this->currentUser->hasPermission('administer site configuration')) {
       $form['cron_run'] = [
         '#type'  => 'details',
