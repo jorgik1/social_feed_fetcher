@@ -47,7 +47,7 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item['media_url'],'public://instagram'),
+          'target_id' => $this->processImageFile($data_item['media_url'],'public://instagram'),
         ],
         'field_posted' => [
           'value' => $string
@@ -56,6 +56,23 @@ class InstagramNodeProcessor extends PluginNodeProcessorPluginBase {
       return $node->save();
     }
     return FALSE;
+  }
+
+  /**
+   * Save external file.
+   *
+   * @param $filename
+   * @param $path
+   *
+   * @return int
+   */
+  public function processImageFile($filename, $path) {
+    $name = basename($filename);
+    $data = file_get_contents($filename);
+    $uri = $path . '/' . $name;
+    file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+    $uri = explode('?', $uri);
+    return file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)->id();
   }
 
 }

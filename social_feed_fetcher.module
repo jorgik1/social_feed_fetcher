@@ -34,22 +34,4 @@ function social_feed_fetcher_linkify($text) {
   return $text;
 }
 
-/**
- * Save external file.
- *
- * @param $filename
- * @param $path
- *
- * @return int
- */
-function social_feed_fetcher_save_file($filename, $path) {
-  $name = basename($filename);
-  $data = file_get_contents($filename);
-  $uri = $path . '/' . $name;
-  file_prepare_directory($path, FILE_CREATE_DIRECTORY);
-  $uri = explode('?', $uri);
-  if (!file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)) {
-    return 0;
-  }
-  return file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)->id();
-}
+

@@ -30,7 +30,7 @@ class LinkedinNodeProcessor extends PluginNodeProcessorPluginBase {
 
       $file = NULL;
       if (isset($item['content'])) {
-        $file = social_feed_fetcher_save_file($item['content']['eyebrowUrl'], 'public://linkedin');
+        $file = $this->processImageFile($item['content']['eyebrowUrl'], 'public://linkedin');
       }
 
       $node = $this->entityStorage->create([
@@ -57,6 +57,26 @@ class LinkedinNodeProcessor extends PluginNodeProcessorPluginBase {
       return $node->save();
     }
     return FALSE;
+  }
+
+  /**
+   * Save external file.
+   *
+   * @param $filename
+   * @param $path
+   *
+   * @return int
+   */
+  public function processImageFile($filename, $path) {
+    $name = basename($filename);
+    $data = file_get_contents($filename);
+    $uri = $path . '/' . $name;
+    file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+    $uri = explode('?', $uri);
+    if (!file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)) {
+      return 0;
+    }
+    return file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)->id();
   }
 
 }

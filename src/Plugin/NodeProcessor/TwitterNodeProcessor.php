@@ -39,13 +39,33 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
           'options' => [],
         ],
         'field_sp_image' => [
-          'target_id' => social_feed_fetcher_save_file($data_item->entities->media[0]->media_url_https, 'public://twitter'),
+          'target_id' => $this->processImageFile($data_item->entities->media[0]->media_url_https, 'public://twitter'),
         ],
         'field_posted' => $this->setPostTime($data_item->created_at),
       ]);
       return $node->save();
     }
     return FALSE;
+  }
+
+  /**
+   * Save external file.
+   *
+   * @param $filename
+   * @param $path
+   *
+   * @return int
+   */
+  public function processImageFile($filename, $path) {
+    $name = basename($filename);
+    $data = file_get_contents($filename);
+    $uri = $path . '/' . $name;
+    file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+    $uri = explode('?', $uri);
+    if (!file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)) {
+      return 0;
+    }
+    return file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)->id();
   }
 
 }
