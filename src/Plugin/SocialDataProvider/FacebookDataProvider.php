@@ -52,7 +52,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
       $this->facebook = new Facebook([
         'app_id'                => $this->config->get('fb_app_id'),
         'app_secret'            => $this->config->get('fb_secret_key'),
-        'default_graph_version' => 'v2.10',
+        'default_graph_version' => 'v3.0',
         'default_access_token'  => $this->defaultAccessToken(),
       ]);
     }
