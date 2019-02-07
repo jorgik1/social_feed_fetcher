@@ -24,7 +24,7 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
    */
   public function processItem($source, $data_item) {
     if (!$this->isPostIdExist($data_item->id)) {
-      $node = $this->entityStorage->create([
+      $tweet = [
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item->id,
         'field_platform' => ucwords($source),
@@ -33,16 +33,21 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
           'value' => social_feed_fetcher_linkify(html_entity_decode($data_item->full_text)),
           'format' => $this->config->get('formats_post_format'),
         ],
-        'field_social_feed_link' => [
+        'field_posted' => $this->setPostTime($data_item->created_at),
+      ];
+      if (isset($data_item->entities->media[0]->url)) {
+        $tweet['field_social_feed_link'] = [
           'uri' => $data_item->entities->media[0]->url,
           'title' => '',
           'options' => [],
-        ],
-        'field_sp_image' => [
+        ];
+      }
+      if (isset($data_item->entities->media[0]->media_url_https)) {
+        $tweet['field_sp_image'] = [
           'target_id' => $this->processImageFile($data_item->entities->media[0]->media_url_https, 'public://twitter'),
-        ],
-        'field_posted' => $this->setPostTime($data_item->created_at),
-      ]);
+        ];
+      }
+      $node = $this->entityStorage->create($tweet);
       return $node->save();
     }
     return FALSE;
