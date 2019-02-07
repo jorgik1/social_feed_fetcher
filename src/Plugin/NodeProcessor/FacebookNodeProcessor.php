@@ -24,7 +24,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
    */
   public function processItem($source, $data_item) {
     if (!$this->isPostIdExist($data_item['id'])) {
-      $node = $this->entityStorage->create([
+      $fbpost = [
         'type' => 'social_post',
         'title' => 'Post ID: ' . $data_item['id'],
         'field_platform' => ucwords($source),
@@ -33,18 +33,23 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
           'value' => social_feed_fetcher_linkify(html_entity_decode($data_item['message'] ?: '')),
           'format' => $this->config->get('formats_post_format'),
         ],
-        'field_social_feed_link' => [
-          'uri' => $data_item['link'],
-          'title' => '',
-          'options' => [],
-        ],
-        'field_sp_image' => [
-          'target_id' => $this->processImageFile($data_item['image'], 'public://facebook'),
-        ],
         'field_posted' => [
           'value' => $this->setPostTime($data_item['created_time']),
         ],
-      ]);
+      ];
+      if (isset($data_item['link'])) {
+        $fbpost['field_social_feed_link'] = [
+          'uri' => $data_item['link'],
+          'title' => '',
+          'options' => [],
+        ];
+      }      
+      if (isset($data_item['image'])) {
+        $fbpost['field_sp_image'] = [
+          'target_id' => $this->processImageFile($data_item['image'], 'public://facebook')
+        ];
+      }
+      $node = $this->entityStorage->create($fbpost);
       return $node->save();
     }
     return FALSE;
