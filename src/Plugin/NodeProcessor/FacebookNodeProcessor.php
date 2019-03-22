@@ -64,7 +64,8 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
    * @return int
    */
   public function processImageFile($filename, $path) {
-    $data = file_get_contents($filename);
+    $response = $this->httpClient->get($filename);
+    $data = $response->getBody();
     $uri = $path . '/' . mt_rand() . '.jpg';
     file_prepare_directory($path, FILE_CREATE_DIRECTORY);
     return file_save_data($data, $uri, FILE_EXISTS_REPLACE)->id();

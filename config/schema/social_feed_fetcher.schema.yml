@@ -23,6 +23,9 @@ social_feed_fetcher.settings:
      fb_secret_key:
        type: string
        label: Facebook Secret Key
+     fb_user_token:
+       type: string
+       label: Facebook User Token
      fb_no_feeds:
        type: integer
        label: Number of feeds
@@ -68,24 +71,9 @@ social_feed_fetcher.settings:
      tw_count:
        type: integer
        label: Tweets Count
-     hashtag:
-       type: boolean
-       label: Show Hashtag
-     time_stamp:
-       type: boolean
-       label: Show Date/Time
-     time_format:
-       type: string
-       label: Date/Time format
      time_ago:
        type: boolean
        label: Show date Twitter style
-     trim_length:
-       type: integer
-       label: Trim Length
-     teaser_text:
-       type: string
-       label: Teaser Text
      in_client_id:
        type: string
        label: client_id
@@ -110,9 +98,6 @@ social_feed_fetcher.settings:
      in_picture_resolution:
        type: string
        label: Picture Resolution
-     time_format:
-       type: string
-       label: Date/Time format
      in_post_link:
        type: boolean
        label: Show post URL

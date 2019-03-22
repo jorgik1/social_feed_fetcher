@@ -69,7 +69,8 @@ class LinkedinNodeProcessor extends PluginNodeProcessorPluginBase {
    */
   public function processImageFile($filename, $path) {
     $name = basename($filename);
-    $data = file_get_contents($filename);
+    $response = $this->httpClient->get($filename);
+    $data = $response->getBody();
     $uri = $path . '/' . $name;
     file_prepare_directory($path, FILE_CREATE_DIRECTORY);
     $uri = explode('?', $uri);

@@ -73,22 +73,35 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
   public function getPosts($num_posts = 10) {
     $page_name = $this->config->get('fb_page_name');
     $post_types = $this->config->get('fb_post_type');
+    $user_token = $this->config->get('fb_user_token');
     $posts      = [];
     $post_count = 0;
     $url        = $page_name . $this->getFacebookFeedUrl($num_posts);
     do {
-      $response = $this->facebook->get($url);
+      try {
+        if (!empty($user_token)) {
+          $response = $this->facebook->get($url, $user_token);
+        } else {
+          $response = $this->facebook->get($url);
+        }
+      }
+      catch (\Exception $exception) {
+        watchdog_exception('error', $exception);
+        continue;
+      }
+
       // Ensure not caught in an infinite loop if there's no next page.
       $url = NULL;
       if ($response->getHttpStatusCode() == Response::HTTP_OK) {
         $data       = json_decode($response->getBody(), TRUE);
         $posts      = array_merge($this->extractFacebookFeedData($post_types, $data['data']), $posts);
-        $post_count = count($posts);
+        $post_count += count($posts);
         if ($post_count < $num_posts && isset($data['paging']['next'])) {
           $url = $data['paging']['next'];
         }
       }
-    } while ($post_count < $num_posts || NULL != $url);
+    } while ($post_count < $num_posts && NULL != $url);
+
     return array_slice($posts, 0, $num_posts);
   }
 

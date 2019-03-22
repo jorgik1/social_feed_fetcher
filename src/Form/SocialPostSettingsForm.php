@@ -149,6 +149,20 @@ class SocialPostSettingsForm extends ConfigFormBase {
       ],
     ];
 
+    $form['facebook']['fb_user_token'] = [
+      '#type'          => 'textfield',
+      '#title'         => $this->t('Facebook User Token'),
+      '#default_value' => $config->get('fb_user_token'),
+      '#size'          => 100,
+      '#maxlength'     => 255,
+      '#required'      => FALSE,
+      '#states'        => [
+        'visible' => [
+          ':input[name="facebook_enabled"]' => ['checked' => TRUE],
+        ],
+      ],
+    ];
+
     $form['facebook']['fb_no_feeds'] = [
       '#type'          => 'number',
       '#title'         => $this->t('Number of Feeds'),

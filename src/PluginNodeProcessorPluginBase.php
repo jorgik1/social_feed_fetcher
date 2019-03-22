@@ -4,6 +4,7 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginBase;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
 
 abstract class PluginNodeProcessorPluginBase extends PluginBase implements PluginNodeProcessorPluginInterface {
 
@@ -17,6 +18,11 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
    * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
    */
   protected $entityStorage;
+
+  /**
+   * @var \GuzzleHttp\Client
+   */
+  protected $httpClient;
 
   /**
    * {@inheritdoc}
@@ -76,8 +82,8 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   public function setPostTime($time_entry){
     /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
     $time = new DrupalDateTime($time_entry);
-    $time->setTimezone(new \DateTimezone(DATETIME_STORAGE_TIMEZONE));
-    return $time->format(DATETIME_DATETIME_STORAGE_FORMAT);
+    $time->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
+    return $time->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
   }
 
   /**
@@ -101,6 +107,18 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
    */
   public function setConfig($config){
     $this->config = $config;
+    return $this;
+  }
+
+  /**
+   * Setter for httpClient.
+   *
+   * @param $httpClient
+   *
+   * @return $this
+   */
+  public function setClient($httpClient){
+    $this->httpClient = $httpClient;
     return $this;
   }
 }
