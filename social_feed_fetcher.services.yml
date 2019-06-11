@@ -7,4 +7,4 @@ services:
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory']
   import_social_feed_service:
     class: Drupal\social_feed_fetcher\ImportSocialFeedService
-    arguments: ['@config.factory', '@queue', '@plugin.social_data_provider.manager', '@state', '@logger.factory']
+    arguments: ['@config.factory', '@queue', '@plugin.social_data_provider.manager', '@state', '@logger.factory', '@messenger']
