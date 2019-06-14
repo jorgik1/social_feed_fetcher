@@ -60,14 +60,14 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
    *
    * @return array|int
    */
-  public function isPostIdExist($data_item_id){
-    if($data_item_id) {
-      $query = $this->entityStorage->getQuery()
-        ->condition('status', 1)
-        ->condition('type', 'social_post')
-        ->condition('field_id', $data_item_id);
-      return $query->execute();
+  public function isPostIdExist($data_item_id) {
+    if (!$data_item_id) {
+      return FALSE;
     }
+    $query = $this->entityStorage->getQuery()
+      ->condition('type', 'social_post')
+      ->condition('field_id', $data_item_id);
+    return $query->execute();
   }
 
   /**

@@ -5,7 +5,6 @@ namespace Drupal\social_feed_fetcher;
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
 use Drupal\Core\Logger\LoggerChannelFactory;
-use Drupal\Core\Messenger\Messenger;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\State\State;
@@ -86,7 +85,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
       $this->doImport();
 
       if ($this->state->get('social_feed_fetcher_show_status_message')) {
-        $this->messenger->addMessage(t('The Social Feed Fetcher cron executed at %time', ['%time' => date_iso8601($request_time)]));
+        $this->messenger->addMessage(t('The Social Feed Fetcher cron executed at %time', ['%time' => date('c', $request_time)]));
         $this->state->set('social_feed_fetcher_show_status_message', FALSE);
       }
 
@@ -146,7 +145,6 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   /**
    * @return int|void
    * @throws \Drupal\Component\Plugin\Exception\PluginException
-   * @throws \Facebook\Exceptions\FacebookSDKException
    */
   protected function doFacebookImport() {
     // Get facebook posts, if enabled.
@@ -197,7 +195,6 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
 
   /**
    * @throws \Drupal\Component\Plugin\Exception\PluginException
-   * @throws \Exception
    */
   private function doInstagrammImport() {
     $instagram_count = 0;
