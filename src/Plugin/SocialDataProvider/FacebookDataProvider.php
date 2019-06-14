@@ -78,18 +78,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
     $post_count = 0;
     $url        = $page_name . $this->getFacebookFeedUrl($num_posts);
     do {
-      try {
-        if (!empty($user_token)) {
-          $response = $this->facebook->get($url, $user_token);
-        } else {
-          $response = $this->facebook->get($url);
-        }
-      }
-      catch (\Exception $exception) {
-        watchdog_exception('error', $exception);
-        continue;
-      }
-
+      $response = $user_token ? $this->facebook->get($url, $user_token) : $this->facebook->get($url);
       // Ensure not caught in an infinite loop if there's no next page.
       $url = NULL;
       if ($response->getHttpStatusCode() == Response::HTTP_OK) {

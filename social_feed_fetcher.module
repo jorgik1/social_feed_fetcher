@@ -24,7 +24,7 @@ function social_feed_fetcher_linkify($text) {
   $rexFragment = '(#[!$-/0-9:;=@_\':;!a-zA-Z\x7f-\xff]+?)?';
 
   $text = preg_replace_callback("&\\b$rexProtocol$rexDomain$rexPort$rexPath$rexQuery$rexFragment(?=[?.!,;:\"]?(\s|$))&",
-    function ($match) {
+     static function ($match) {
       // Prepend http:// if no protocol specified.
       $completeUrl = $match[1] ? $match[0] : "http://{$match[0]}";
 
@@ -33,5 +33,3 @@ function social_feed_fetcher_linkify($text) {
     }, htmlspecialchars($text));
   return $text;
 }
-
-

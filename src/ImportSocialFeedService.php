@@ -69,7 +69,6 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   /**
    * Pull social feeds, as configured by module settings.
    *
-   * @throws \Facebook\Exceptions\FacebookSDKException
    * @throws \Exception
    * @throws \GuzzleHttp\Exception\GuzzleException
    *
@@ -147,6 +146,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   /**
    * @return int|void
    * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Facebook\Exceptions\FacebookSDKException
    */
   protected function doFacebookImport() {
     // Get facebook posts, if enabled.
@@ -197,6 +197,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
 
   /**
    * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Exception
    */
   private function doInstagrammImport() {
     $instagram_count = 0;
