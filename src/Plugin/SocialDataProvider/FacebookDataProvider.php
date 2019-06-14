@@ -125,7 +125,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
 
     // Filtering needed.
     if (TRUE == is_string($post_types)) {
-      $posts = array_filter($posts, function ($post) use ($post_types) {
+      $posts = array_filter($posts, static function ($post) use ($post_types) {
         return $post['type'] === $post_types;
       });
       return $posts;
