@@ -309,9 +309,10 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#title'         => $this->t('Enable'),
       '#default_value' => $config->get('instagram_enabled'),
     ];
+    $help_url = \Drupal::moduleHandler()->moduleExists('help')
+      ? Url::fromRoute('help.page', ['name' => 'socialfeed'])->toString() : '#';
     $form['instagram']['header']['#markup'] = $this->t('To get Client ID you need to manage clients from your instagram account detailed information <a href="@admin" target="@blank">here</a>.', [
-      '@admin' => Url::fromRoute('help.page',
-        ['name' => 'socialfeed'])->toString(),
+      '@admin' => $help_url,
       '@blank' => '_blank',
     ]);
     $form['instagram']['in_client_id'] = [
