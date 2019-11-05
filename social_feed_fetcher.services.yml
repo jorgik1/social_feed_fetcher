@@ -1,4 +1,8 @@
 services:
+  social_feed_fetcher.logger:
+    class: Drupal\Core\Logger\LoggerChannel
+    factory: logger.factory:get
+    arguments: ['social_feed_fetcher']
   plugin.manager.node_processor:
     class: Drupal\social_feed_fetcher\PluginNodeProcessorManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory', '@entity_type.manager', '@http_client']
@@ -7,4 +11,4 @@ services:
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory']
   import_social_feed_service:
     class: Drupal\social_feed_fetcher\ImportSocialFeedService
-    arguments: ['@config.factory', '@queue', '@plugin.social_data_provider.manager', '@state', '@logger.factory', '@messenger']
+    arguments: ['@config.factory', '@queue', '@plugin.social_data_provider.manager', '@state', '@social_feed_fetcher.logger', '@messenger']

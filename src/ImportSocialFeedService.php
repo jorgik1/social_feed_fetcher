@@ -4,11 +4,11 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Core\Config\ConfigFactory;
 use Drupal\Core\DependencyInjection\ContainerInjectionInterface;
-use Drupal\Core\Logger\LoggerChannelFactory;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Queue\QueueFactory;
 use Drupal\Core\State\State;
 use Exception;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -39,7 +39,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   private $state;
 
   /**
-   * @var \Drupal\Core\Logger\LoggerChannel
+   * @var \Psr\Log\LoggerInterface
    */
   private $logger;
 
@@ -47,6 +47,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * @var \Drupal\Core\Messenger\MessengerInterface
    */
   protected $messenger;
+
   /**
    * ImportSocialFeedService constructor.
    *
@@ -54,14 +55,15 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * @param \Drupal\Core\Queue\QueueFactory $queueFactory
    * @param \Drupal\social_feed_fetcher\SocialDataProviderManager $socialDataProviderManager
    * @param \Drupal\Core\State\State $state
-   * @param \Drupal\Core\Logger\LoggerChannelFactory $loggerChannelFactory
+   * @param \Psr\Log\LoggerInterface $logger
+   * @param \Drupal\Core\Messenger\MessengerInterface $messenger
    */
-  public function __construct(ConfigFactory $config_factory, QueueFactory $queueFactory, SocialDataProviderManager $socialDataProviderManager, State $state, LoggerChannelFactory $loggerChannelFactory, MessengerInterface $messenger) {
+  public function __construct(ConfigFactory $config_factory, QueueFactory $queueFactory, SocialDataProviderManager $socialDataProviderManager, State $state, LoggerInterface $logger, MessengerInterface $messenger) {
     $this->config = $config_factory->getEditable('social_feed_fetcher.settings');
     $this->queue = $queueFactory;
     $this->socialDataProvider = $socialDataProviderManager;
     $this->state = $state;
-    $this->logger = $loggerChannelFactory->get('social_feed_fetcher');
+    $this->logger = $logger;
     $this->messenger = $messenger;
   }
 
@@ -102,7 +104,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
       $container->get('queue'),
       $container->get('plugin.social_data_provider.manager'),
       $container->get('state'),
-      $container->get('logger.factory'),
+      $container->get('social_feed_fetcher.logger'),
       $container->get('messenger')
     );
   }
@@ -159,6 +161,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $facebook->getPosts($posts_count_num);
     } catch (Exception $exception) {
+      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
       $this->messenger->addError($facebook->getPluginId() . ' ' . $exception->getMessage());
       return;
     }
@@ -184,6 +187,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $twitter->getPosts($this->config->get('tw_count'));
     } catch (Exception $exception) {
+      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
       $this->messenger->addError($twitter->getPluginId() . ' ' . $exception->getMessage());
     }
     foreach ($posts as $item) {
@@ -206,6 +210,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $instagram->getPosts($this->config->get('in_picture_count'));
     } catch (Exception $exception) {
+      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
       $this->messenger->addError($instagram->getPluginId() . ' ' . $exception->getMessage());
     }
     foreach ($posts as $item) {
@@ -235,6 +240,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $linkedin_posts = $linkedin->getPosts($this->config->get('linkedin_posts_count'));
     } catch (Exception $exception) {
+      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
       $this->messenger->addError($linkedin->getPluginId() . ' ' . $exception->getMessage());
     }
     if ($linkedin_posts) {
