@@ -3,10 +3,12 @@
 namespace Drupal\social_feed_fetcher\Plugin\NodeProcessor;
 
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\File\FileSystemInterface;
 use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Class TwitterNodeProcessor
+ * Class TwitterNodeProcessor.
  *
  * @package Drupal\social_feed_fetcher\Plugin\NodeProcessor
  *
@@ -66,12 +68,12 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
     $response = $this->httpClient->get($filename);
     $data = $response->getBody();
     $uri = $path . '/' . $name;
-    file_prepare_directory($path, FILE_CREATE_DIRECTORY);
+    $this->fileSystem->prepareDirectory($path, FileSystemInterface::CREATE_DIRECTORY);
     $uri = explode('?', $uri);
-    if (!file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)) {
+    if (!file_save_data($data, $uri[0], FileSystemInterface::EXISTS_REPLACE)) {
       return 0;
     }
-    return file_save_data($data, $uri[0], FILE_EXISTS_REPLACE)->id();
+    return file_save_data($data, $uri[0], FileSystemInterface::EXISTS_REPLACE)->id();
   }
 
 }

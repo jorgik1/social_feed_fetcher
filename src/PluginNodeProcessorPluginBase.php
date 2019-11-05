@@ -25,6 +25,11 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   protected $httpClient;
 
   /**
+   * @var \Drupal\Core\File\FileSystemInterface
+   */
+  protected $fileSystem;
+
+  /**
    * {@inheritdoc}
    */
   public function __construct(array $configuration, $plugin_id, $plugin_definition) {
@@ -121,4 +126,19 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
     $this->httpClient = $httpClient;
     return $this;
   }
+
+  /**
+   * @return mixed
+   */
+  public function getFileSystem() {
+    return $this->fileSystem;
+  }
+
+  /**
+   * @param mixed $fileSystem
+   */
+  public function setFileSystem($fileSystem) {
+    $this->fileSystem = $fileSystem;
+  }
+
 }

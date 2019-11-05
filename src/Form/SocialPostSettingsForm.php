@@ -93,7 +93,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
     $next_execution = !empty($next_execution) ? $next_execution : $this->requestTime;
 
     $args = [
-      '%time'    => date_iso8601($this->state->get('social_feed_fetcher.next_execution')),
+      '%time'    => date('c', ($this->state->get('social_feed_fetcher.next_execution'))),
       '%seconds' => $next_execution - $this->requestTime,
     ];
     $form['status']['last'] = [

@@ -5,7 +5,7 @@ services:
     arguments: ['social_feed_fetcher']
   plugin.manager.node_processor:
     class: Drupal\social_feed_fetcher\PluginNodeProcessorManager
-    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory', '@entity_type.manager', '@http_client']
+    arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory', '@entity_type.manager', '@http_client', '@file_system']
   plugin.social_data_provider.manager:
     class: Drupal\social_feed_fetcher\SocialDataProviderManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory']
