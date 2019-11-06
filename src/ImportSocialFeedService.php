@@ -145,8 +145,12 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   }
 
   /**
+   * Facebook import.
+   *
    * @return int|void
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Facebook\Exceptions\FacebookSDKException
    */
   protected function doFacebookImport() {
     // Get facebook posts, if enabled.
@@ -161,7 +165,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $facebook->getPosts($posts_count_num);
     } catch (Exception $exception) {
-      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
+      $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($facebook->getPluginId() . ' ' . $exception->getMessage());
       return;
     }
@@ -173,7 +177,10 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   }
 
   /**
+   * Tweeter import.
+   *
    * @return int
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   private function doTweeterImport() {
@@ -187,7 +194,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $twitter->getPosts($this->config->get('tw_count'));
     } catch (Exception $exception) {
-      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
+      $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($twitter->getPluginId() . ' ' . $exception->getMessage());
     }
     foreach ($posts as $item) {
@@ -198,6 +205,10 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   }
 
   /**
+   * Instagram import.
+   *
+   * @return int
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   private function doInstagrammImport() {
@@ -210,7 +221,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $posts = $instagram->getPosts($this->config->get('in_picture_count'));
     } catch (Exception $exception) {
-      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
+      $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($instagram->getPluginId() . ' ' . $exception->getMessage());
     }
     foreach ($posts as $item) {
@@ -221,7 +232,10 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   }
 
   /**
+   * Linkedin import.
+   *
    * @return int
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
@@ -240,7 +254,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     try {
       $linkedin_posts = $linkedin->getPosts($this->config->get('linkedin_posts_count'));
     } catch (Exception $exception) {
-      $this->logger->error('Error message was occurring while posts import. ' . $exception->getMessage());
+      $this->logger->error('An error message occurred.' . $exception->getMessage());
       $this->messenger->addError($linkedin->getPluginId() . ' ' . $exception->getMessage());
     }
     if ($linkedin_posts) {
