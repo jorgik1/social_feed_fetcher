@@ -2,7 +2,6 @@
 
 namespace Drupal\social_feed_fetcher\Form;
 
-use Drupal\Console\Bootstrap\Drupal;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\CronInterface;
 use Drupal\Core\Form\ConfigFormBase;
@@ -11,6 +10,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Session\AccountInterface;
 use Drupal\Core\State\StateInterface;
 use Drupal\Core\Url;
+use LinkedIn\Scope;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -515,7 +515,7 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#title'  => $this->t('Feed URL'),
       '#markup' => $this->t('Your url redirect is : @url_redirect',
         [
-          '@url_redirect'  => \Drupal::request()->getHost() . '/oauth/callback',
+          '@url_redirect'  => \Drupal::request()->getScheme() . '://' . \Drupal::request()->getHost() . '/oauth/callback',
         ]
       ),
       '#states' => [
@@ -525,23 +525,24 @@ class SocialPostSettingsForm extends ConfigFormBase {
       ],
     ];
     if ($config->get('linkedin_client_id') && $config->get('linkedin_secret_app')) {
-      $url = Url::fromUri(
-        'https://www.linkedin.com/oauth/v2/authorization',
-        [
-          'query' => [
-            'response_type' => 'code',
-            'client_id' => $config->get('linkedin_client_id'),
-            'redirect_uri' => 'https://' . \Drupal::request()->getHost() . '/oauth/callback',
-          ],
-        ]
-      );
+      /** @var \LinkedIn\Client $linkedin */
+      $linkedin = \Drupal::service('social_feed_fetcher.linkedin.client');
+      // Define scope permissions.
+      $scopes = [
+        Scope::READ_BASIC_PROFILE,
+        Scope::READ_EMAIL_ADDRESS,
+        Scope::MANAGE_COMPANY,
+        Scope::SHARING,
+      ];
+      $linkedin->setRedirectUrl(\Drupal::request()->getScheme() . '://' . \Drupal::request()->getHost() . '/oauth/callback');
+      $loginUrl = $linkedin->getLoginUrl($scopes);
       $form['linkedin']['url_connector'] = [
         '#type'   => 'item',
         '#title'  => $this->t('URL connector'),
         '#description' => $this->t('You need to click on this link to update the access token. this one expire all the 60 days.'),
         '#markup' => $this->t('Your url redirect is : <a href="@url_connector" target="@blank">here</a>',
           [
-            '@url_connector'  => $url->toString(),
+            '@url_connector'  => $loginUrl  ,
             '@blank' => '_blank',
           ]
         ),

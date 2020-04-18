@@ -3,6 +3,12 @@ services:
     class: Drupal\Core\Logger\LoggerChannel
     factory: logger.factory:get
     arguments: ['social_feed_fetcher']
+  social_feed_fetcher.linkedin.oauth.factory:
+    class: Drupal\social_feed_fetcher\ProviderDataFactory\LinkedinDataProviderFactory
+    arguments: ['@config.factory']
+  social_feed_fetcher.linkedin.client:
+    class: LinkedIn\Client
+    factory: ['@social_feed_fetcher.linkedin.oauth.factory', createLinkedinClient]
   plugin.manager.node_processor:
     class: Drupal\social_feed_fetcher\PluginNodeProcessorManager
     arguments: ['@container.namespaces', '@cache.discovery', '@module_handler', '@config.factory', '@entity_type.manager', '@http_client', '@file_system']

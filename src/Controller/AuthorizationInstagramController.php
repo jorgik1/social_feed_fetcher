@@ -133,10 +133,11 @@ class AuthorizationInstagramController extends ControllerBase {
   /**
    * Set as variable the value of access token and expires_in.
    *
-   * @param $content
+   * @param string $content
    *   The access token and the expires_in value.
    *
    * @return bool
+   *   Set to true.
    */
   protected function setAccessToken($content) {
     if (isset($content['access_token'])) {
@@ -146,36 +147,4 @@ class AuthorizationInstagramController extends ControllerBase {
     }
     return FALSE;
   }
-
-  protected function getLongLivedAccessToken($short_token) {
-    $client = new Client([
-      'base_uri' => 'https://graph.instagram.com',
-      'allow_redirects' => TRUE,
-      'timeout' => 0,
-    ]);
-    $config = $this->configFactory->getEditable('social_feed_fetcher.settings');
-    $response = $client->request(
-      'GET',
-      '/access_token',
-      [
-        'headers' => [
-          'Content-Type' => "application/x-www-form-urlencoded",
-        ],
-        'form_params' => [
-          'grant_type' => 'ig_exchange_token',
-          'client_secret' => $config->get('in_client_secret'),
-          'access_token' => $short_token,
-        ],
-      ]
-    );
-
-    if (isset($response)) {
-      $data = $response->getBody()->getContents();
-      $content = Json::decode($data);
-      return $this->setAccessToken($content);
-    }
-
-    return FALSE;
-  }
-
 }

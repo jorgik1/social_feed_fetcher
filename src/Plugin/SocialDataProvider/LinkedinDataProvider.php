@@ -2,15 +2,11 @@
 
 namespace Drupal\social_feed_fetcher\Plugin\SocialDataProvider;
 
-
-use Abraham\TwitterOAuth\TwitterOAuth;
-use Drupal\Component\Serialization\Json;
-use Drupal\Component\Utility\NestedArray;
 use Drupal\social_feed_fetcher\SocialDataProviderPluginBase;
-use GuzzleHttp\Client;
+use LinkedIn\AccessToken;
 
 /**
- * Class TwitterDataProvider
+ * Class LinkedinDataProvider.
  *
  * @package Drupal\social_feed_fetcher\Plugin\SocialDataProvider
  *
@@ -47,11 +43,7 @@ class LinkedinDataProvider extends SocialDataProviderPluginBase {
    */
   public function setClient() {
     if (NULL === $this->linkedin) {
-      $this->linkedin = new Client([
-        'base_uri' => 'https://www.linkedin.com',
-        'allow_redirects' => FALSE,
-        'timeout' => 0,
-      ]);
+      $this->client = \Drupal::service('social_feed_fetcher.linkedin.client');
     }
   }
 
@@ -81,31 +73,23 @@ class LinkedinDataProvider extends SocialDataProviderPluginBase {
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
   public function getPosts($count) {
-
-    $bearer = \Drupal::service('state')->get('access_token');
-
-    $feed = $this->feed . '/~';
-    if ($this->feed == 'companies') {
-      $feed = $this->feed . '/' . $this->companiesId . '/updates:(updateContent)';
+    $access = \Drupal::state()->getMultiple(['access_token', 'expires_in', 'expires_in_save']);
+    $this->client->setApiHeaders([
+      'Content-Type' => 'application/json',
+      'x-li-format' => 'json',
+    // Use protocol v2.
+      'X-Restli-Protocol-Version' => '2.0.0',
+    ]);
+    $this->client->setApiRoot('https://api.linkedin.com/v2/');
+    $this->client->setAccessToken(new AccessToken($access['access_token']));
+    $feed = $this->feed;
+    if ($this->feed === 'companies') {
+      $feed = "ugcPosts?q=authors&authors=List(urn%3Ali%3Aorganization%3A{$this->companiesId})";
     }
-
-    $response = $this->linkedin->request(
-      'GET',
-      'v1/' . $feed,
-      [
-        'query' => [
-          'format' => 'json'
-        ],
-        'headers' => [
-          'Authorization' => 'Bearer ' . $bearer,
-        ]
-      ]
-    );
-
-    $data = $response->getBody()->getContents();
-    $content = Json::decode($data);
-
-    return $content;
+    if ($this->feed === 'people') {
+      $feed = 'me';
+    }
+    return $this->client->get($feed);
   }
 
 }

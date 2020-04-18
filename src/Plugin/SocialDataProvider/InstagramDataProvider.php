@@ -49,11 +49,11 @@ class InstagramDataProvider extends SocialDataProviderPluginBase {
     $posts    = [];
     $response = $this->instagram->getUserMedia('me', $numPosts);
     if (isset($response->data)) {
-      $posts = array_map(function ($post) {
+      $posts = array_map(static function ($post) {
         return [
           'raw'       => $post,
           'media_url' => $post->media_url ?? '',
-          'type'      => $post->type,
+          'type'      => $post->media_type,
         ];
       }, $response->data);
     }
