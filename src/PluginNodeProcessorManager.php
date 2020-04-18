@@ -34,8 +34,8 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
   /**
    * GuzzleHttp\ClientInterface definition.
    *
-  * @var \GuzzleHttp\ClientInterface
-  */
+   * @var \GuzzleHttp\ClientInterface
+   */
   protected $httpClient;
 
   /**
@@ -48,7 +48,7 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
   /**
    * {@inheritdoc}
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler,  ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entityTypeManager, ClientInterface $httpClient, FileSystemInterface $file_system) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, ConfigFactoryInterface $configFactory, EntityTypeManagerInterface $entityTypeManager, ClientInterface $httpClient, FileSystemInterface $file_system) {
     parent::__construct(
       'Plugin/NodeProcessor',
       $namespaces,
@@ -56,7 +56,6 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
       PluginNodeProcessorPluginInterface::class,
       PluginNodeProcessor::class
     );
-    # hook_node_processor_info_alter();
     $this->alterInfo('node_processor_info');
     $this->setCacheBackend($cache_backend, 'node_processor');
     $this->factory = new DefaultFactory($this->getDiscovery());
@@ -69,7 +68,7 @@ class PluginNodeProcessorManager extends DefaultPluginManager {
   /**
    * {@inheritdoc}
    */
-  public function createInstance($plugin_id, array $configuration = array()) {
+  public function createInstance($plugin_id, array $configuration = []) {
     $instance = parent::createInstance($plugin_id, $configuration);
     $instance->setConfig($this->config);
     $instance->setStorage($this->entityStorage);

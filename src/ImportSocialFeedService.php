@@ -19,31 +19,43 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 class ImportSocialFeedService implements ContainerInjectionInterface {
 
   /**
+   * Config definition.
+   *
    * @var \Drupal\Core\Config\Config
    */
   private $config;
 
   /**
+   * QueueFactory  definition.
+   *
    * @var \Drupal\Core\Queue\QueueFactory
    */
   private $queue;
 
   /**
+   * SocialDataProviderManager definition.
+   *
    * @var \Drupal\social_feed_fetcher\SocialDataProviderManager
    */
   private $socialDataProvider;
 
   /**
+   * State definition.
+   *
    * @var \Drupal\Core\State\State
    */
   private $state;
 
   /**
+   * LoggerInterface definition.
+   *
    * @var \Psr\Log\LoggerInterface
    */
   private $logger;
 
   /**
+   * MessengerInterface definition.
+   *
    * @var \Drupal\Core\Messenger\MessengerInterface
    */
   protected $messenger;
@@ -52,11 +64,17 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * ImportSocialFeedService constructor.
    *
    * @param \Drupal\Core\Config\ConfigFactory $config_factory
+   *   ConfigFactory definition.
    * @param \Drupal\Core\Queue\QueueFactory $queueFactory
+   *   QueueFactory definition.
    * @param \Drupal\social_feed_fetcher\SocialDataProviderManager $socialDataProviderManager
+   *   SocialDataProviderManager definition.
    * @param \Drupal\Core\State\State $state
+   *   State definition.
    * @param \Psr\Log\LoggerInterface $logger
+   *   Logger definition.
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   Messenger definition.
    */
   public function __construct(ConfigFactory $config_factory, QueueFactory $queueFactory, SocialDataProviderManager $socialDataProviderManager, State $state, LoggerInterface $logger, MessengerInterface $messenger) {
     $this->config = $config_factory->getEditable('social_feed_fetcher.settings');
@@ -72,7 +90,6 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    *
    * @throws \Exception
    * @throws \GuzzleHttp\Exception\GuzzleException
-   *
    */
   public function import() {
 
@@ -110,8 +127,10 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   }
 
   /**
+   * Make import.
+   *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
-   * @throws \GuzzleHttp\Exception\GuzzleException
+   * @throws \GuzzleHttp\Exception\GuzzleException|\Facebook\Exceptions\FacebookSDKException
    */
   protected function doImport() {
     $facebook_count = 0;
@@ -140,7 +159,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
         '@facebook' => $this->config->get('facebook_enabled') ? ' enabled, ' . $facebook_count . ' new posts' : ' disabled',
         '@twitter' => $this->config->get('twitter_enabled') ? ' enabled, ' . $twitter_count . ' new posts' : ' disabled',
         '@instagram' => $this->config->get('instagram_enabled') ? ' enabled, ' . $instagram_count . ' new posts' : ' disabled',
-        '@linkedin' => $this->config->get('linkedin_enabled') ? ' enabled, ' . $linkedin_count . ' new posts' : ' disabled'
+        '@linkedin' => $this->config->get('linkedin_enabled') ? ' enabled, ' . $linkedin_count . ' new posts' : ' disabled',
       ]);
   }
 
@@ -148,6 +167,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * Facebook import.
    *
    * @return int|void
+   *   Count of imported posts.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    * @throws \Facebook\Exceptions\FacebookSDKException
@@ -155,7 +175,6 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   protected function doFacebookImport() {
     // Get facebook posts, if enabled.
     $facebook_count = 0;
-    /** @var \Drupal\Core\Queue\QueueInterface $facebook_queue */
     $facebook_queue = $this->queue->get('social_posts_facebook_queue_worker');
     /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\FacebookDataProvider $facebook */
     $facebook = $this->socialDataProvider->createInstance('facebook');
@@ -164,10 +183,11 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     // Get all recent posts facebook.
     try {
       $posts = $facebook->getPosts($posts_count_num);
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception) {
       $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($facebook->getPluginId() . ' ' . $exception->getMessage());
-      return;
+      return FALSE;
     }
     foreach ($posts as $item) {
       $facebook_queue->createItem($item);
@@ -180,12 +200,12 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * Tweeter import.
    *
    * @return int
+   *   Imported posts count.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    */
   private function doTweeterImport() {
     $twitter_count = 0;
-    /** @var \Drupal\Core\Queue\QueueInterface $twitter_queue */
     $twitter_queue = $this->queue->get('social_posts_twitter_queue_worker');
     /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\TwitterDataProvider $twitter */
     $twitter = $this->socialDataProvider->createInstance('twitter');
@@ -193,7 +213,8 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     $twitter->setClient();
     try {
       $posts = $twitter->getPosts($this->config->get('tw_count'));
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception) {
       $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($twitter->getPluginId() . ' ' . $exception->getMessage());
     }
@@ -208,19 +229,21 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * Instagram import.
    *
    * @return int
+   *   Imported posts count.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
+   * @throws \Exception
    */
   private function doInstagrammImport() {
     $instagram_count = 0;
-    /** @var \Drupal\Core\Queue\QueueInterface $instagram_queue */
     $instagram_queue = $this->queue->get('social_posts_instagram_queue_worker');
     /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\InstagramDataProvider $instagram */
     $instagram = $this->socialDataProvider->createInstance('instagram');
     $instagram->setClient();
     try {
       $posts = $instagram->getPosts($this->config->get('in_picture_count'));
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception) {
       $this->logger->error('An error message occurred. ' . $exception->getMessage());
       $this->messenger->addError($instagram->getPluginId() . ' ' . $exception->getMessage());
     }
@@ -235,6 +258,7 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
    * Linkedin import.
    *
    * @return int
+   *   Imported posts count.
    *
    * @throws \Drupal\Component\Plugin\Exception\PluginException
    * @throws \GuzzleHttp\Exception\GuzzleException
@@ -242,18 +266,18 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
   private function doLinkedinImport() {
     $linkedin_count = 0;
     $linkedin_posts = [];
-    /** @var \Drupal\Core\Queue\QueueInterface $linkedin_queue */
     $linkedin_queue = $this->queue->get('social_posts_linkedin_queue_worker');
     /** @var \Drupal\social_feed_fetcher\Plugin\SocialDataProvider\LinkedinDataProvider $linkedin */
     $linkedin = $this->socialDataProvider->createInstance('linkedin');
     $linkedin->setFeed($this->config->get('linkedin_feed_type'));
-    if ($this->config->get('linkedin_feed_type') === 'companies'){
+    if ($this->config->get('linkedin_feed_type') === 'companies') {
       $linkedin->setCompaniesId($this->config->get('linkedin_companies_id'));
     }
     $linkedin->setClient();
     try {
       $linkedin_posts = $linkedin->getPosts($this->config->get('linkedin_posts_count'));
-    } catch (Exception $exception) {
+    }
+    catch (Exception $exception) {
       $this->logger->error('An error message occurred.' . $exception->getMessage());
       $this->messenger->addError($linkedin->getPluginId() . ' ' . $exception->getMessage());
     }
@@ -268,4 +292,5 @@ class ImportSocialFeedService implements ContainerInjectionInterface {
     }
     return $linkedin_count;
   }
+
 }

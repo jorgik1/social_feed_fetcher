@@ -31,9 +31,12 @@ class SocialFeedFetcherCommands extends DrushCommands {
   }
 
   /**
+   * Run queue.
+   *
    * @param array $queuesID
+   *   Ids of queue.
    */
-  public function runQueues($queuesID = []) {
+  public function runQueues(array $queuesID = []) {
     $queue_factory = \Drupal::service('queue');
     $queue_manager = \Drupal::service('plugin.manager.queue_worker');
 
@@ -47,10 +50,12 @@ class SocialFeedFetcherCommands extends DrushCommands {
         try {
           $queue_worker->processItem($item->data);
           $queue->deleteItem($item);
-        } catch (SuspendQueueException $e) {
+        }
+        catch (SuspendQueueException $e) {
           $queue->releaseItem($item);
           break;
-        } catch (\Exception $e) {
+        }
+        catch (\Exception $e) {
           watchdog_exception('npq', $e);
         }
       }

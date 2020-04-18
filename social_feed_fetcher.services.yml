@@ -12,3 +12,9 @@ services:
   import_social_feed_service:
     class: Drupal\social_feed_fetcher\ImportSocialFeedService
     arguments: ['@config.factory', '@queue', '@plugin.social_data_provider.manager', '@state', '@social_feed_fetcher.logger', '@messenger']
+  social_feed_fetcher.instagram.client.factory:
+    class: Drupal\social_feed_fetcher\ProviderDataFactory\InstagramDataProvideFactory
+    arguments: ['@config.factory']
+  social_feed_fetcher.instagram.client:
+    class: EspressoDev\InstagramBasicDisplay\InstagramBasicDisplay
+    factory: ['@social_feed_fetcher.instagram.client.factory', create]

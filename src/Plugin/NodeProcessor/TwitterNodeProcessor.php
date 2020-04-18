@@ -2,10 +2,8 @@
 
 namespace Drupal\social_feed_fetcher\Plugin\NodeProcessor;
 
-use Drupal\Core\Datetime\DrupalDateTime;
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class TwitterNodeProcessor.
@@ -58,10 +56,13 @@ class TwitterNodeProcessor extends PluginNodeProcessorPluginBase {
   /**
    * Save external file.
    *
-   * @param $filename
-   * @param $path
+   * @param string $filename
+   *   File name.
+   * @param string $path
+   *   Current path.
    *
    * @return int
+   *   Id of the file entity.
    */
   public function processImageFile($filename, $path) {
     $name = basename($filename);

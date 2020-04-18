@@ -9,22 +9,22 @@ use Drupal\Core\Extension\ModuleHandlerInterface;
 use Drupal\Core\Plugin\DefaultPluginManager;
 use Drupal\social_feed_fetcher\Annotation\SocialDataProvider;
 
-
 /**
  * Provides an NodeProcessor plugin manager.
  */
 class SocialDataProviderManager extends DefaultPluginManager {
 
   /**
+   * Config definition.
+   *
    * @var \Drupal\Core\Config\Config
    */
   protected $config;
 
-
   /**
    * {@inheritdoc}
    */
-  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler,  ConfigFactoryInterface $configFactory) {
+  public function __construct(\Traversable $namespaces, CacheBackendInterface $cache_backend, ModuleHandlerInterface $module_handler, ConfigFactoryInterface $configFactory) {
     parent::__construct(
       'Plugin/SocialDataProvider',
       $namespaces,
@@ -32,7 +32,6 @@ class SocialDataProviderManager extends DefaultPluginManager {
       SocialDataProviderInterface::class,
       SocialDataProvider::class
     );
-    # hook_node_processor_info_alter();
     $this->alterInfo('social_data_provider_info');
     $this->setCacheBackend($cache_backend, 'social_data_provider');
     $this->factory = new DefaultFactory($this->getDiscovery());
@@ -42,7 +41,7 @@ class SocialDataProviderManager extends DefaultPluginManager {
   /**
    * {@inheritdoc}
    */
-  public function createInstance($plugin_id, array $configuration = array()) {
+  public function createInstance($plugin_id, array $configuration = []) {
     $instance = parent::createInstance($plugin_id, $configuration);
     $instance->setConfig($this->config);
     return $instance;

@@ -4,6 +4,9 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
+/**
+ * SocialDataProviderInterface definition.
+ */
 interface SocialDataProviderInterface extends PluginInspectionInterface {
 
   /**
@@ -18,18 +21,17 @@ interface SocialDataProviderInterface extends PluginInspectionInterface {
 
   /**
    * Setting social network client.
-   *
-   * @return object
    */
   public function setClient();
 
   /**
    * Getting posts from social network.
    *
-   * @param integer $count
+   * @param int $count
    *   Posts count parameter.
    *
    * @return array
+   *   Posts array.
    */
   public function getPosts($count);
 

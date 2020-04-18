@@ -14,3 +14,12 @@ social_feed_fetcher.authorization_code:
   requirements:
     # No access restriction to get authorization code.
     _access: 'TRUE'
+
+social_feed_fetcher.instagram.authorization_code:
+  path: '/instagram/oauth/callback'
+  defaults:
+    _controller: '\Drupal\social_feed_fetcher\Controller\AuthorizationInstagramController::getResponse'
+  description: 'Route to get the authorization code from app.'
+  requirements:
+    # No access restriction to get authorization code.
+    _access: 'TRUE'

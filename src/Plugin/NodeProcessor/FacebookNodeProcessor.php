@@ -4,7 +4,6 @@ namespace Drupal\social_feed_fetcher\Plugin\NodeProcessor;
 
 use Drupal\Core\File\FileSystemInterface;
 use Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * Class FacebookNodeProcessor.
@@ -47,7 +46,7 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
       }
       if (isset($data_item['image'])) {
         $fbpost['field_sp_image'] = [
-          'target_id' => $this->processImageFile($data_item['image'], 'public://facebook')
+          'target_id' => $this->processImageFile($data_item['image'], 'public://facebook'),
         ];
       }
       $node = $this->entityStorage->create($fbpost);
@@ -59,10 +58,13 @@ class FacebookNodeProcessor extends PluginNodeProcessorPluginBase {
   /**
    * Save external file.
    *
-   * @param $filename
-   * @param $path
+   * @param string $filename
+   *   File name.
+   * @param string $path
+   *   Current path.
    *
    * @return int
+   *   Id of the file entity.
    */
   public function processImageFile($filename, $path) {
     $response = $this->httpClient->get($filename);

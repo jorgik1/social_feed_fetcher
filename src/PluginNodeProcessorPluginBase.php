@@ -3,38 +3,45 @@
 namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginBase;
+use Drupal\Core\Config\Config;
 use Drupal\Core\Datetime\DrupalDateTime;
+use Drupal\Core\Entity\EntityStorageInterface;
 use Drupal\datetime\Plugin\Field\FieldType\DateTimeItemInterface;
+use GuzzleHttp\ClientInterface;
 
+/**
+ * PluginNodeProcessorPluginBase class.
+ */
 abstract class PluginNodeProcessorPluginBase extends PluginBase implements PluginNodeProcessorPluginInterface {
 
 
   /**
+   * Configuration definition.
+   *
    * @var \Drupal\Core\Config\Config
    */
   protected $config;
 
   /**
+   * EntityStorageInterface definition.
+   *
    * @var \Drupal\Core\Entity\EntityStorageInterface|mixed|object
    */
   protected $entityStorage;
 
   /**
-   * @var \GuzzleHttp\Client
+   * Guzzle client definition.
+   *
+   * @var \GuzzleHttp\ClientInterface
    */
   protected $httpClient;
 
   /**
+   * FileSystemInterface definition.
+   *
    * @var \Drupal\Core\File\FileSystemInterface
    */
   protected $fileSystem;
-
-  /**
-   * {@inheritdoc}
-   */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
 
   /**
    * {@inheritdoc}
@@ -58,12 +65,13 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   }
 
   /**
-   * Helper function
-   * Check if post with ID doesn't exist
+   * Helper function to check if post with ID doesn't exist.
    *
    * @param int $data_item_id
+   *   Id from source.
    *
    * @return array|int
+   *   Return array of ids, otherwise empty array.
    */
   public function isPostIdExist($data_item_id) {
     if (!$data_item_id) {
@@ -78,27 +86,28 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   /**
    * Helper function for getting Drupal based time entry.
    *
-   * @param $time_entry
-   *    Time format from social network.
+   * @param string $time_entry
+   *   Time format from social network.
    *
    * @return string
    *   Formatted time string.
    */
-  public function setPostTime($time_entry){
-    /** @var \Drupal\Core\Datetime\DrupalDateTime $time */
+  public function setPostTime($time_entry) {
     $time = new DrupalDateTime($time_entry);
     $time->setTimezone(new \DateTimezone(DateTimeItemInterface::STORAGE_TIMEZONE));
     return $time->format(DateTimeItemInterface::DATETIME_STORAGE_FORMAT);
   }
 
   /**
-   * Setter for entityStorage
+   * Setter for entityStorage.
    *
-   * @param $enitytStorage
+   * @param \Drupal\Core\Entity\EntityStorageInterface $enitytStorage
+   *   EntityStorageInterface definition.
    *
-   * @return $this
+   * @return \Drupal\social_feed_fetcher\PluginNodeProcessorPluginBase
+   *   Plugin definition.
    */
-  public function setStorage($enitytStorage){
+  public function setStorage(EntityStorageInterface $enitytStorage) {
     $this->entityStorage = $enitytStorage;
     return $this;
   }
@@ -106,11 +115,12 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   /**
    * Setter for Config.
    *
-   * @param $config
+   * @param \Drupal\Core\Config\Config $config
+   *   Config definition.
    *
    * @return $this
    */
-  public function setConfig($config){
+  public function setConfig(Config $config) {
     $this->config = $config;
     return $this;
   }
@@ -118,24 +128,31 @@ abstract class PluginNodeProcessorPluginBase extends PluginBase implements Plugi
   /**
    * Setter for httpClient.
    *
-   * @param $httpClient
+   * @param \GuzzleHttp\ClientInterface $httpClient
+   *   Client definition.
    *
    * @return $this
    */
-  public function setClient($httpClient){
+  public function setClient(ClientInterface $httpClient) {
     $this->httpClient = $httpClient;
     return $this;
   }
 
   /**
-   * @return mixed
+   * Get FileSystemInterface.
+   *
+   * @return \Drupal\Core\File\FileSystemInterface
+   *   FileSystemInterface definition.
    */
   public function getFileSystem() {
     return $this->fileSystem;
   }
 
   /**
+   * Setter for FileSystemInterface.
+   *
    * @param mixed $fileSystem
+   *   FileSystemInterface definition.
    */
   public function setFileSystem($fileSystem) {
     $this->fileSystem = $fileSystem;

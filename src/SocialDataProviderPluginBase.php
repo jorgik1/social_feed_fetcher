@@ -2,27 +2,28 @@
 
 namespace Drupal\social_feed_fetcher;
 
-
+use Drupal\Core\Config\Config;
 use Drupal\Core\Plugin\PluginBase;
 
+/**
+ * SocialDataProviderPluginBase class.
+ */
 abstract class SocialDataProviderPluginBase extends PluginBase implements SocialDataProviderInterface {
 
   /**
+   * Configuration definition.
+   *
    * @var \Drupal\Core\Config\Config
    */
   protected $config;
 
-  /**
-   * Social network client object.
-   */
-  protected $client;
 
   /**
-   * {@inheritdoc}
+   * Social network client object.
+   *
+   * @var object
    */
-  public function __construct(array $configuration, $plugin_id, $plugin_definition) {
-    parent::__construct($configuration, $plugin_id, $plugin_definition);
-  }
+  protected $client;
 
   /**
    * {@inheritdoc}
@@ -41,11 +42,12 @@ abstract class SocialDataProviderPluginBase extends PluginBase implements Social
   /**
    * Setter for Config.
    *
-   * @param $config
+   * @param \Drupal\Core\Config\Config $config
+   *   Configuration definition.
    *
    * @return $this
    */
-  public function setConfig($config) {
+  public function setConfig(Config $config) {
     $this->config = $config;
     return $this;
   }
@@ -59,4 +61,5 @@ abstract class SocialDataProviderPluginBase extends PluginBase implements Social
    * {@inheritdoc}
    */
   abstract public function setClient();
+
 }

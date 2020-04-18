@@ -45,7 +45,7 @@ class LinkedinNodeProcessor extends PluginNodeProcessorPluginBase {
           'format' => $this->config->get('formats_post_format'),
         ],
         'field_social_feed_link' => [
-          'uri' => isset($item['link']) ? $item['link'] : '',
+          'uri' => $item['link'] ?? '',
           'title' => '',
           'options' => [],
         ],
@@ -64,10 +64,13 @@ class LinkedinNodeProcessor extends PluginNodeProcessorPluginBase {
   /**
    * Save external file.
    *
-   * @param $filename
-   * @param $path
+   * @param string $filename
+   *   File name.
+   * @param string $path
+   *   Current path.
    *
    * @return int
+   *   Id of the file entity.
    */
   public function processImageFile($filename, $path) {
     $name = basename($filename);

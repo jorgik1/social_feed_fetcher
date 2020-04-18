@@ -4,6 +4,9 @@ namespace Drupal\social_feed_fetcher;
 
 use Drupal\Component\Plugin\PluginInspectionInterface;
 
+/**
+ * PluginNodeProcessorPluginInterface definition.
+ */
 interface PluginNodeProcessorPluginInterface extends PluginInspectionInterface {
 
   /**
@@ -22,7 +25,7 @@ interface PluginNodeProcessorPluginInterface extends PluginInspectionInterface {
    * @param string $source
    *   Source of feed procedure.
    * @param mixed $data_item
-   *    Data from the feed procedure.
+   *   Data from the feed procedure.
    *
    * @return bool
    *   Return TRUE if node was created.
