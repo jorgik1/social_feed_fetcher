@@ -382,9 +382,14 @@ class SocialPostSettingsForm extends ConfigFormBase {
         ]
       ),
     ];
-    $insta_access = $this->state->getMultiple(['insta_access_token', 'insta_expires_in_save']);
+    $insta_access = $this->state->getMultiple([
+      'insta_access_token',
+      'insta_expires_in_save',
+      'insta_expires_in',
+    ]);
+    $time = time();
     $message = $this->t("You're disconnect to Instagram API. You need to refresh the token");
-    if (isset($insta_access['insta_access_token'])) {
+    if (($insta_access['insta_expires_in_save'] + $insta_access['insta_expires_in']) > $time) {
       $message = $this->t("You're connected to Instagram API.");
     }
     $form['instagram']['connect_api'] = [
@@ -400,21 +405,6 @@ class SocialPostSettingsForm extends ConfigFormBase {
       '#maxlength'     => 100,
       '#min'           => 1,
       '#max'           => 30,
-      '#states'        => [
-        'visible' => [
-          ':input[name="instagram_enabled"]' => ['checked' => TRUE],
-        ],
-      ],
-    ];
-    $form['instagram']['in_picture_resolution'] = [
-      '#type'          => 'select',
-      '#title'         => $this->t('Picture Resolution'),
-      '#default_value' => $config->get('in_picture_resolution'),
-      '#options'       => [
-        'thumbnail'           => $this->t('Thumbnail'),
-        'low_resolution'      => $this->t('Low Resolution'),
-        'standard_resolution' => $this->t('Standard Resolution'),
-      ],
       '#states'        => [
         'visible' => [
           ':input[name="instagram_enabled"]' => ['checked' => TRUE],
@@ -547,7 +537,11 @@ class SocialPostSettingsForm extends ConfigFormBase {
           ]
         ),
       ];
-      $access = $this->state->getMultiple(['access_token', 'expires_in', 'expires_in_save']);
+      $access = $this->state->getMultiple([
+        'access_token',
+        'expires_in',
+        'expires_in_save',
+      ]);
       $time = time();
       $message = $this->t("You're disconnect to Linkedin API. You need to refresh the token");
       if (($access['expires_in_save'] + $access['expires_in']) > $time) {

@@ -2,14 +2,12 @@
 
 namespace Drupal\social_feed_fetcher\Plugin\SocialDataProvider;
 
-
-use Drupal\social_feed_fetcher\Annotation\SocialDataProvider;
 use Drupal\social_feed_fetcher\SocialDataProviderPluginBase;
 use Facebook\Facebook;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Class FacebookDataProvider
+ * Class FacebookDataProvider.
  *
  * @package Drupal\social_feed_fetcher\Plugin\SocialDataProvider
  *
@@ -32,7 +30,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
     'permalink_url',
     'picture{url}',
     'type',
-    'attachments'
+    'attachments',
   ];
 
 
@@ -45,6 +43,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
 
   /**
    * {@inheritdoc}
+   *
    * @throws \Facebook\Exceptions\FacebookSDKException
    */
   public function setClient() {
@@ -58,7 +57,6 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
     }
   }
 
-
   /**
    * Fetch Facebook posts from a given feed.
    *
@@ -71,7 +69,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
    * @throws \Facebook\Exceptions\FacebookSDKException
    */
   public function getPosts($num_posts = 10) {
-    $page_name = $this->config->get('fb_page_name');
+    $page_name  = $this->config->get('fb_page_name');
     $post_types = $this->config->get('fb_post_type');
     $user_token = $this->config->get('fb_user_token');
     $posts      = [];
@@ -82,8 +80,8 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
       // Ensure not caught in an infinite loop if there's no next page.
       $url = NULL;
       if ($response->getHttpStatusCode() == Response::HTTP_OK) {
-        $data       = json_decode($response->getBody(), TRUE);
-        $posts      = array_merge($this->extractFacebookFeedData($post_types, $data['data']), $posts);
+        $data        = json_decode($response->getBody(), TRUE);
+        $posts       = array_merge($this->extractFacebookFeedData($post_types, $data['data']), $posts);
         $post_count += count($posts);
         if ($post_count < $num_posts && isset($data['paging']['next'])) {
           $url = $data['paging']['next'];
@@ -117,7 +115,7 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
       }
 
       $post += [
-        'image' => $image
+        'image' => $image,
       ];
 
       return $post;
@@ -155,4 +153,5 @@ class FacebookDataProvider extends SocialDataProviderPluginBase {
   protected function getFacebookFeedUrl($num_posts) {
     return '/feed?fields=' . implode(',', $this->fields) . '&limit=' . $num_posts;
   }
+
 }

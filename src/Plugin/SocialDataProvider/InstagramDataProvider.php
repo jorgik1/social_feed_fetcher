@@ -31,8 +31,8 @@ class InstagramDataProvider extends SocialDataProviderPluginBase {
   public function setClient() {
     if (NULL === $this->instagram) {
       $this->instagram = \Drupal::service('social_feed_fetcher.instagram.client');
-      $token = $this->instagram->getLongLivedToken(\Drupal::service('state')->get('insta_access_token'));
-      $this->instagram->setAccessToken($token->access_token);
+      $access_token = \Drupal::service('state')->get('insta_access_token');
+      $this->instagram->setAccessToken($access_token);
     }
   }
 
@@ -58,23 +58,6 @@ class InstagramDataProvider extends SocialDataProviderPluginBase {
       }, $response->data);
     }
     return $posts;
-  }
-
-  /**
-   * Retrieve the array key to fetch the post media url.
-   *
-   * @param string $type
-   *   The post type.
-   *
-   * @return string
-   *   The array key to fetch post media url.
-   */
-  protected function getMediaArrayKey($type) {
-    $mediaType = 'images';
-    if ($type === 'video') {
-      $mediaType = 'videos';
-    }
-    return $mediaType;
   }
 
 }

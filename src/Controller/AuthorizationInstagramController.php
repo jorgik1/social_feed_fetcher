@@ -1,49 +1,69 @@
 <?php
 
-
 namespace Drupal\social_feed_fetcher\Controller;
-
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
+use EspressoDev\InstagramBasicDisplay\InstagramBasicDisplay;
 use GuzzleHttp\Client;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 
+/**
+ * AuthorizationInstagramController class.
+ */
 class AuthorizationInstagramController extends ControllerBase {
 
   /**
+   * MessengerInterface definition.
+   *
    * @var \Drupal\Core\Messenger\MessengerInterface
    */
   protected $messenger;
 
   /**
+   * RequestStack definition.
+   *
    * @var \Symfony\Component\HttpFoundation\RequestStack
    */
   protected $requestStack;
 
   /**
+   * ConfigFactoryInterface definition.
+   *
    * @var \Drupal\Core\Config\ConfigFactoryInterface
    */
   protected $configFactory;
 
   /**
+   * The instagram client.
+   *
+   * @var \EspressoDev\InstagramBasicDisplay\InstagramBasicDisplay
+   */
+  protected $instagramClient;
+
+  /**
    * AuthorizationCodeController constructor.
    *
    * @param \Drupal\Core\Messenger\MessengerInterface $messenger
+   *   MessengerInterface definition.
    * @param \Symfony\Component\HttpFoundation\RequestStack $requestStack
+   *   RequestStack definition.
    * @param \Drupal\Core\Config\ConfigFactoryInterface $configFactory
+   *   ConfigFactoryInterface definition.
+   * @param \EspressoDev\InstagramBasicDisplay\InstagramBasicDisplay $instagramBasicDisplay
+   *   The instagram client.
    */
-  public function __construct(MessengerInterface $messenger, RequestStack $requestStack, ConfigFactoryInterface $configFactory) {
+  public function __construct(MessengerInterface $messenger, RequestStack $requestStack, ConfigFactoryInterface $configFactory, InstagramBasicDisplay $instagramBasicDisplay) {
     $this->messenger = $messenger;
     $this->requestStack = $requestStack;
     $this->configFactory = $configFactory;
-
+    $this->instagramClient = $instagramBasicDisplay;
   }
 
   /**
@@ -53,17 +73,19 @@ class AuthorizationInstagramController extends ControllerBase {
     return new static(
       $container->get('messenger'),
       $container->get('request_stack'),
-      $container->get('config.factory')
+      $container->get('config.factory'),
+      $container->get('social_feed_fetcher.instagram.client')
     );
   }
 
   /**
    * Catch response from Linkedin authentication to get an authorization code.
    *
-   *
    * @param \Symfony\Component\HttpFoundation\Request $request
+   *   The symfony request.
    *
    * @return \Symfony\Component\HttpFoundation\RedirectResponse
+   *   The redirect response.
    *
    * @throws \GuzzleHttp\Exception\GuzzleException
    */
@@ -86,7 +108,7 @@ class AuthorizationInstagramController extends ControllerBase {
   /**
    * Call to linkedin api to get an access token and expires_in value.
    *
-   * @param $code
+   * @param string $code
    *   The authorization token.
    *
    * @return bool
@@ -141,10 +163,13 @@ class AuthorizationInstagramController extends ControllerBase {
    */
   protected function setAccessToken($content) {
     if (isset($content['access_token'])) {
-      $this->state()->set('insta_access_token', $content['access_token']);
+      $longLivedData = $this->instagramClient->getLongLivedToken($content['access_token']);
+      $this->state()->set('insta_access_token', $longLivedData->access_token);
+      $this->state()->set('insta_expires_in', $longLivedData->expires_in);
       $this->state()->set('insta_expires_in_save', time());
       return TRUE;
     }
     return FALSE;
   }
+
 }
