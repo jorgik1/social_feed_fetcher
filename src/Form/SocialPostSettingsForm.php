@@ -365,38 +365,40 @@ class SocialPostSettingsForm extends ConfigFormBase {
             'response_type' => 'code',
             'scope' => implode(',', ['user_profile', 'user_media']),
             'client_id' => $config->get('in_client_id'),
-            'redirect_uri' => \Drupal::request()->getScheme() . '://' . \Drupal::request()
+            'redirect_uri' => \Drupal::request()
+              ->getScheme() . '://' . \Drupal::request()
               ->getHost() . '/instagram/oauth/callback',
           ],
         ]
       );
+
+      $form['instagram']['url_connector'] = [
+        '#type' => 'item',
+        '#title' => $this->t('URL connector'),
+        '#description' => $this->t('You need to click on this link to update the access token. this one expire all the 60 days.'),
+        '#markup' => $this->t('Your url redirect is : <a href="@url_connector" target="@blank">here</a>',
+          [
+            '@url_connector' => $url->toString(),
+            '@blank' => '_blank',
+          ]
+        ),
+      ];
+      $insta_access = $this->state->getMultiple([
+        'insta_access_token',
+        'insta_expires_in_save',
+        'insta_expires_in',
+      ]);
+      $time = time();
+      $message = $this->t("You're disconnect to Instagram API. You need to refresh the token");
+      if (($insta_access['insta_expires_in_save'] + $insta_access['insta_expires_in']) > $time) {
+        $message = $this->t("You're connected to Instagram API.");
+      }
+      $form['instagram']['connect_api'] = [
+        '#type' => 'item',
+        '#title' => $this->t('State API connection'),
+        '#markup' => $message,
+      ];
     }
-    $form['instagram']['url_connector'] = [
-      '#type'   => 'item',
-      '#title'  => $this->t('URL connector'),
-      '#description' => $this->t('You need to click on this link to update the access token. this one expire all the 60 days.'),
-      '#markup' => $this->t('Your url redirect is : <a href="@url_connector" target="@blank">here</a>',
-        [
-          '@url_connector'  => $url->toString(),
-          '@blank' => '_blank',
-        ]
-      ),
-    ];
-    $insta_access = $this->state->getMultiple([
-      'insta_access_token',
-      'insta_expires_in_save',
-      'insta_expires_in',
-    ]);
-    $time = time();
-    $message = $this->t("You're disconnect to Instagram API. You need to refresh the token");
-    if (($insta_access['insta_expires_in_save'] + $insta_access['insta_expires_in']) > $time) {
-      $message = $this->t("You're connected to Instagram API.");
-    }
-    $form['instagram']['connect_api'] = [
-      '#type'   => 'item',
-      '#title'  => $this->t('State API connection'),
-      '#markup' => $message,
-    ];
     $form['instagram']['in_picture_count'] = [
       '#type'          => 'number',
       '#title'         => $this->t('Picture Count'),

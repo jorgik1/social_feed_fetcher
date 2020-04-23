@@ -9,6 +9,7 @@ use Drupal\Core\Messenger\MessengerInterface;
 use Drupal\Core\Url;
 use EspressoDev\InstagramBasicDisplay\InstagramBasicDisplay;
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\ClientException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -125,24 +126,28 @@ class AuthorizationInstagramController extends ControllerBase {
 
     $redirect_url = $this->requestStack->getCurrentRequest()->getHost();
     $config = $this->configFactory->getEditable('social_feed_fetcher.settings');
-
-    $response = $client->request(
-      'POST',
-      '/oauth/access_token',
-      [
-        'headers' => [
-          'Content-Type' => "application/x-www-form-urlencoded",
-        ],
-        'form_params' => [
-          'client_id' => $config->get('in_client_id'),
-          'client_secret' => $config->get('in_client_secret'),
-          'code' => $code,
-          'grant_type' => 'authorization_code',
-          'redirect_uri' => 'https://' . $redirect_url . '/instagram/oauth/callback',
-        ],
-      ]
-    );
-
+    try {
+      $response = $client->request(
+        'POST',
+        '/oauth/access_token',
+        [
+          'headers' => [
+            'Content-Type' => "application/x-www-form-urlencoded",
+          ],
+          'form_params' => [
+            'client_id' => $config->get('in_client_id'),
+            'client_secret' => $config->get('in_client_secret'),
+            'code' => $code,
+            'grant_type' => 'authorization_code',
+            'redirect_uri' => 'https://' . $redirect_url . '/instagram/oauth/callback',
+          ],
+        ]
+      );
+    }
+    catch (ClientException | \Exception $exception) {
+      $this->messenger->addError('An exception during request occurs: ' . $exception->getMessage());
+      return FALSE;
+    }
     if (isset($response)) {
       $data = $response->getBody()->getContents();
       $content = Json::decode($data);
