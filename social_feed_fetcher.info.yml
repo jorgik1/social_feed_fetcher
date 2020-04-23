@@ -3,7 +3,7 @@ type: module
 description: 'Fetching social feeds from Facebook, Twitter, Instagram, and aggregates them into a content type.'
 configure: social_feed_fetcher.settings
 package: Other
-core: 8
+core: 8.x
 core_version_requirement: ^8 || ^9
 dependencies:
 - drupal:node
