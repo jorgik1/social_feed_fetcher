@@ -35,7 +35,7 @@ class SocialDataProviderManager extends DefaultPluginManager {
     $this->alterInfo('social_data_provider_info');
     $this->setCacheBackend($cache_backend, 'social_data_provider');
     $this->factory = new DefaultFactory($this->getDiscovery());
-    $this->config = $configFactory->getEditable('social_feed_fetcher.settings');
+    $this->config = $configFactory->get('social_feed_fetcher.settings');
   }
 
   /**
